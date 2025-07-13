@@ -21,14 +21,14 @@ const Header = () => {
     <header className={`header ${scrolled ? 'scrolled' : ''}`}>
       <div className="header-container">
         <div className="nav-links-container">
-          <Link to="/eventos" className="nav-link">EVENTOS</Link>
-          <Link to="/a-tu-medida" className="nav-link">A TU MEDIDA</Link>
+          <Link to="/monturas" className="nav-link">MONTURAS</Link>
+          <Link to="/lentescontacto" className="nav-link">LENTES DE CONTACTO</Link>
         </div>
         
         <div className="logo-container">
           <Link to="/" className="logo-link">
             <img 
-              src="/oggio.png" 
+              src="/oggi.png" 
               alt="Centro Óptico" 
               className="logo"
             />
@@ -36,8 +36,8 @@ const Header = () => {
         </div>
         
         <div className="nav-links-container">
-          <Link to="/mar-express" className="nav-link">MAR EXPRESS</Link>
-          <Link to="/galeria" className="nav-link">GALERÍA</Link>
+          <Link to="/productos" className="nav-link">PRODUCTOS</Link>
+          <Link to="/contacto" className="nav-link">CONTACTO</Link>
         </div>
       </div>
     </header>
