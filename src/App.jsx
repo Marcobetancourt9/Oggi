@@ -3,6 +3,8 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import Inicio from './Inicio/Inicio';
+import '@fortawesome/fontawesome-free/css/all.min.css';
+import WhatsApp from './Whatsapp/Whatsapp';
 //import Menu from './Menu/Menu';
 import './App.css';
 
@@ -27,14 +29,14 @@ export default function App() {
     <Router>
       <div className="app-container">
         <Header className={scrolled ? 'scrolled' : ''} />
-        {/*<main className="main-content">
+        <main className="main-content">
           <Routes>
             <Route path="/" element={<Inicio />} />
-            <Route path="/menu" element={<Menu />} />
+            {/*<Route path="/menu" element={<Menu />} />*/}
           </Routes> 
           </main>
-          */}
         <Footer />
+        <WhatsApp />
       </div>
     </Router>
   );

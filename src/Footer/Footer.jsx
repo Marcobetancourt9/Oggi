@@ -7,33 +7,68 @@ const Footer = () => {
       <div className="footer-container">
         <div className="footer-grid">
           <div className="footer-column">
-            <h3 className="footer-title">DESCARGA NUESTRA APLICACIÓN</h3>
-            <div className="download-app">
-              <p className="download-text">Descárgalo en el App Store</p>
-              <p className="download-text">DISPONIBLE EN Google Play</p>
-            </div>
+            <h3 className="footer-title">Servicios</h3>
+            <ul className="footer-links">
+              <li><a href="/financiamiento">Sistema de Financiamiento</a></li>
+              <li><a href="/apartado">Sistema De Apartado</a></li>
+              <li><a href="/devoluciones">Política de Devolución</a></li>
+              <li><a href="/reparacion">Reparación</a></li>
+            </ul>
           </div>
 
           <div className="footer-column">
-            <h3 className="footer-title">CONTACTO</h3>
-            <div className="contact-info">
-              <p><span className="contact-label">Correo:</span> ventas@festejosmar.com</p>
-              <p><span className="contact-label">Teléfonos:</span></p>
-              <p>+58 (212) 953-0022</p>
-              <p>+58 (424) 112-9771</p>
-              <p><span className="contact-label">Dirección:</span></p>
-              <p>Av. Los Cortijos.</p>
-              <p>Quinta Esmeralda.</p>
-              <p>Url. Campo Alegre. Caracas.</p>
-              <p>Venezuela</p>
-            </div>
+            <h3 className="footer-title">Atención al cliente</h3>
+            <ul className="footer-links">
+              <li><a href="/faq">Preguntas Frecuentes</a></li>
+              <li><a href="/envios">Envío</a></li>
+              <li><a href="/trabaja-con-nosotros">Trabaja con Nosotros</a></li>
+              <li><a href="/blog">Blog</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h3 className="footer-title">Sobre</h3>
+            <ul className="footer-links">
+              <li><a href="/nosotros">Sobre Nosotros</a></li>
+              <li><a href="/vision">Visión De Vida</a></li>
+            </ul>
+          </div>
+
+          <div className="footer-column">
+            <h3 className="footer-title">Servicios Clave</h3>
+            <ul className="footer-links">
+              <li><a href="/examen-vista">Examen de la Vista</a></li>
+              <li><a href="/garantia">Garantía Extendida</a></li>
+              <li><a href="/servicio-expresa">Servicio Expresa</a></li>
+              <li><a href="/corporativos">Servicios Corporativos</a></li>
+            </ul>
           </div>
         </div>
 
-        <div className="footer-bottom">
-          <p className="copyright">
-            Copyright © {new Date().getFullYear()} Festejos MAR. Desarrollado por Ventana Digital.
-          </p>
+        <div className="payment-methods">
+          <h4>Métodos de pago:</h4>
+          <div className="payment-icons">
+            <span>Safetoy</span>
+            <span>Página</span>
+            <span>Nombre</span>
+            <span>Término</span>
+          </div>
+        </div>
+
+        <div className="social-media">
+          <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://www.instagram.com/centroopticooggi/" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-instagram"></i>
+          </a>
+          <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+            <i className="fab fa-twitter"></i>
+          </a>
+        </div>
+
+        <div className="copyright">
+          <p>© Óptica Caroni. Todos los derechos reservados. Sitio web por: <a href="https://www.opticommerce.com" target="_blank" rel="noopener noreferrer">OptiCommerce</a></p>
         </div>
       </div>
     </footer>
