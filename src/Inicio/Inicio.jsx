@@ -3,9 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 
 // Importa tus imágenes (asegúrate de tener estas imágenes en tu proyecto)
-import monturasImg from '../images/monturas.JPG';
-import lentesContactoImg from '../images/lentes-contacto.jpg';
-import lentesSolImg from '../images/lentes-sol.png';
+
+const monturasImg = '/images/monturas.JPG';
+const lentesContactoImg = '/images/lentes-contacto.jpg';
+const lentesSolImg = '/images/lentes-sol.png';
 
 const Inicio = () => {
   const navigate = useNavigate();
