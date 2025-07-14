@@ -1,3 +1,5 @@
+/* LentesContacto.module.css */
+
 .lentesContainer {
   display: flex;
   flex-direction: column;
@@ -5,7 +7,8 @@
   padding: 80px 20px;
   width: 100%;
   box-sizing: border-box;
-  background-color: #f9fafb;
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+  min-height: 100vh;
 }
 
 .contentWrapper {
@@ -13,76 +16,192 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1400px;
+  animation: fadeIn 0.8s ease-out;
 }
 
 .headerSection {
   width: 100%;
   text-align: center;
-  margin-bottom: 40px;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.headerSection::after {
+  content: '';
+  display: block;
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #043d99, #000000);
+  margin: 25px auto 0;
+  border-radius: 2px;
 }
 
 .mainTitle {
-  color: #2c3e50;
+  color: #1e293b;
   font-family: 'Montserrat', sans-serif;
-  font-size: 2.8rem;
-  font-weight: 700;
+  font-size: 3rem;
+  font-weight: 800;
   margin-bottom: 15px;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background: linear-gradient(90deg, #043d99, #000000);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 }
 
 .subtitle {
-  color: #7f8c8d;
-  font-size: 1.2rem;
+  color: #64748b;
+  font-size: 1.3rem;
   margin-bottom: 30px;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
 }
 
 .lentesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 30px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 40px;
   width: 100%;
+  padding: 20px 0;
 }
 
 .noResults {
-  margin-top: 40px;
-  font-size: 1.2rem;
-  color: #7f8c8d;
+  margin-top: 60px;
+  font-size: 1.3rem;
+  color: #64748b;
   text-align: center;
   width: 100%;
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
+}
+
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Estilos para la barra de búsqueda */
+.searchBarContainer {
+  width: 100%;
+  max-width: 650px;
+  margin: 0 auto;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.1);
+  border-radius: 50px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.searchBarContainer:focus-within {
+  box-shadow: 0 4px 20px rgba(59, 130, 246, 0.2);
+  transform: translateY(-2px);
+}
+
+.searchBarInput {
+  width: 100%;
+  padding: 18px 25px;
+  border: none;
+  font-size: 1.1rem;
+  background: white;
+  transition: all 0.3s;
+  color: #334155;
+}
+
+.searchBarInput::placeholder {
+  color: #94a3b8;
+}
+
+.searchBarInput:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* Efectos hover para las tarjetas */
+.productCard {
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  border: 1px solid #f1f5f9;
+}
+
+.productCard:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(59, 130, 246, 0.15);
+  border-color: #e0e7ff;
 }
 
 /* Responsive */
+@media (max-width: 1200px) {
+  .lentesGrid {
+    gap: 30px;
+  }
+}
+
 @media (max-width: 992px) {
   .lentesContainer {
-    padding: 60px 20px;
+    padding: 70px 20px;
   }
   
   .mainTitle {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
   }
   
   .lentesGrid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
 
 @media (max-width: 768px) {
   .mainTitle {
-    font-size: 1.8rem;
+    font-size: 2.2rem;
+  }
+  
+  .subtitle {
+    font-size: 1.1rem;
+    padding: 0 20px;
+  }
+
+  .headerSection::after {
+    width: 80px;
+  }
+}
+
+@media (max-width: 576px) {
+  .lentesContainer {
+    padding: 50px 15px;
+  }
+  
+  .mainTitle {
+    font-size: 1.9rem;
   }
   
   .subtitle {
     font-size: 1rem;
   }
-}
 
-@media (max-width: 480px) {
-  .lentesContainer {
-    padding: 40px 15px;
-  }
-  
   .lentesGrid {
     grid-template-columns: 1fr;
+    gap: 25px;
+  }
+
+  .searchBarInput {
+    padding: 15px 20px;
+    font-size: 1rem;
   }
 }

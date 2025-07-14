@@ -5,6 +5,20 @@
   padding: 0 1rem;
 }
 
+.searchButton {
+  background: linear-gradient(90deg, #3498db, #9b59b6);
+  color: white;
+  border: none;
+  padding: 0 25px;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.searchButton:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
 .searchBar {
   display: flex;
   align-items: center;
