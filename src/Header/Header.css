@@ -25,30 +25,7 @@
   position: relative;
 }
 
-.nav-links-container {
-  display: flex;
-  flex: 1;
-  justify-content: space-around;
-}
-
-.nav-link {
-  color: white;
-  text-decoration: none;
-  font-weight: 600;
-  font-size: 15px;
-  padding: 12px 15px;
-  transition: all 0.3s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  position: relative;
-  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
-}
-
-.nav-link:hover {
-  color: #e74c3c;
-}
-
-/* Logo mejorado */
+/* Logo centrado */
 .logo-container {
   position: absolute;
   left: 50%;
@@ -105,6 +82,88 @@
   opacity: 1;
 }
 
+/* Menú desktop */
+.desktop-nav {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+
+.nav-links-container {
+  display: flex;
+}
+
+.left-links {
+  justify-content: flex-start;
+  flex: 1;
+}
+
+.right-links {
+  justify-content: flex-end;
+  flex: 1;
+}
+
+.nav-link {
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 15px;
+  padding: 12px 15px;
+  transition: all 0.3s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  position: relative;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.nav-link:hover {
+  color: #e74c3c;
+}
+
+/* Menú móvil - oculto por defecto */
+.mobile-menu-button {
+  display: none;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 1002;
+  padding: 10px;
+}
+
+.mobile-nav {
+  display: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 70%;
+  max-width: 300px;
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(10px);
+  z-index: 1001;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-out;
+  padding: 80px 20px 20px;
+  flex-direction: column;
+}
+
+.mobile-nav.open {
+  transform: translateX(0);
+}
+
+.mobile-nav-link {
+  color: white;
+  text-decoration: none;
+  padding: 15px 0;
+  font-size: 18px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+/* Media queries para responsive */
 @media (max-width: 992px) {
   .logo-container {
     width: 100px;
@@ -113,37 +172,40 @@
 }
 
 @media (max-width: 768px) {
-  .header-container {
-    flex-direction: column;
-    padding: 15px 10px 70px;
+  .desktop-nav {
+    display: none;
   }
   
-  .nav-links-container {
-    width: 100%;
-    margin-top: 80px;
-    justify-content: space-between;
+  .mobile-menu-button {
+    display: block;
   }
   
-  .nav-link {
-    padding: 8px 10px;
-    font-size: 13px;
+  .mobile-nav {
+    display: flex;
   }
   
   .logo-container {
-    top: 40px;
-    transform: translateX(-50%);
+    position: static;
+    transform: none;
+    width: 80px;
+    height: 80px;
+    margin-right: auto;
+  }
+  
+  .header-container {
+    justify-content: flex-start;
+    gap: 20px;
   }
 }
 
 @media (max-width: 480px) {
   .logo-container {
-    width: 80px;
-    height: 80px;
-  top: 30px;
+    width: 70px;
+    height: 70px;
   }
   
-  .nav-link {
-    font-size: 12px;
-    padding: 6px 8px;
+  .mobile-nav {
+    width: 80%;
   }
 }
+
