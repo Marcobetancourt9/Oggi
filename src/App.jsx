@@ -20,7 +20,7 @@ import Liquido from './Liquido/Liquido';
 import './App.css';
 import LoginForm from './Login/Login';
 import Registro from './Registro/Registro';
-import RecuperarContrasena from './Recuperar/recuperar';
+import RecuperarContrasena from './RecuperarContrasena/RecuperarContrasena';
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
