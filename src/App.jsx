@@ -8,6 +8,7 @@ import LentesContacto from './LentesContacto/LentesContacto';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import WhatsApp from './Whatsapp/Whatsapp';
 import Contacto from './Contacto/Contacto';
+import Productos from './Productos/Productos';
 //import Menu from './Menu/Menu';
 import './App.css';
 
@@ -38,6 +39,7 @@ export default function App() {
             <Route path="/monturas" element={<Monturas />} />
             <Route path="/lentescontacto" element={<LentesContacto />} />
             <Route path="/contacto" element={<Contacto />} />
+            <Route path="/productos" element={<Productos />} />
           </Routes> 
           </main>
         <Footer />
