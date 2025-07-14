@@ -1,0 +1,174 @@
+.contactoContainer {
+  font-family: 'Montserrat', sans-serif;
+  color: #333;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.heroSection {
+  background: linear-gradient(135deg, #6e8efb, #a777e3);
+  color: white;
+  text-align: center;
+  padding: 60px 20px;
+  border-radius: 10px;
+  margin-bottom: 40px;
+}
+
+.heroTitle {
+  font-size: 2.8rem;
+  margin-bottom: 15px;
+}
+
+.heroSubtitle {
+  font-size: 1.4rem;
+  opacity: 0.9;
+}
+
+.contentWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-bottom: 40px;
+}
+
+.contactInfo {
+  flex: 1;
+  min-width: 300px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.infoCard {
+  background: white;
+  border-radius: 10px;
+  padding: 25px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.infoCard:hover {
+  transform: translateY(-5px);
+}
+
+.icon {
+  font-size: 2rem;
+  color: #25D366;
+  margin-bottom: 15px;
+}
+
+.infoCard h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: #2c3e50;
+}
+
+.infoCard p {
+  color: #7f8c8d;
+  margin-bottom: 15px;
+  line-height: 1.5;
+}
+
+.whatsappButton, .mapButton, .phoneButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+}
+
+.whatsappButton {
+  background-color: #25D366;
+  color: white;
+}
+
+.whatsappButton:hover {
+  background-color: #128C7E;
+}
+
+.mapButton {
+  background-color: #4285F4;
+  color: white;
+}
+
+.mapButton:hover {
+  background-color: #3367D6;
+}
+
+.phoneButton {
+  background-color: #34B7F1;
+  color: white;
+}
+
+.phoneButton:hover {
+  background-color: #269BD1;
+}
+
+.mapContainer {
+  flex: 1;
+  min-width: 300px;
+  height: 400px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.map {
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .heroTitle {
+    font-size: 2.2rem;
+  }
+  
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
+  
+  .contentWrapper {
+    flex-direction: column;
+  }
+  
+  .mapContainer {
+    height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .heroSection {
+    padding: 40px 15px;
+  }
+  
+  .heroTitle {
+    font-size: 1.8rem;
+  }
+  
+  .infoCard {
+    padding: 20px;
+  }
+}
+
+.mapContainer {
+  flex: 1;
+  min-width: 300px;
+  height: 400px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 1;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}

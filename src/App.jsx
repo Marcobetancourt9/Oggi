@@ -3,8 +3,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Header/Header';
 import Footer from './Footer/Footer';
 import Inicio from './Inicio/Inicio';
+import Monturas from './Monturas/Monturas';
+import LentesContacto from './LentesContacto/LentesContacto';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import WhatsApp from './Whatsapp/Whatsapp';
+import Contacto from './Contacto/Contacto';
 //import Menu from './Menu/Menu';
 import './App.css';
 
@@ -32,6 +35,9 @@ export default function App() {
         <main className="main-content">
           <Routes>
             <Route path="/" element={<Inicio />} />
+            <Route path="/monturas" element={<Monturas />} />
+            <Route path="/lentescontacto" element={<LentesContacto />} />
+            <Route path="/contacto" element={<Contacto />} />
             {/*<Route path="/menu" element={<Menu />} />*/}
           </Routes> 
           </main>

@@ -68,7 +68,7 @@ const Footer = () => {
         </div>
 
         <div className="copyright">
-          <p>© Óptica Caroni. Todos los derechos reservados. Sitio web por: <a href="https://www.opticommerce.com" target="_blank" rel="noopener noreferrer">OptiCommerce</a></p>
+          <p>© Centro Optico Oggi. Todos los derechos reservados. Sitio web por: <a href="" target="_blank" rel="noopener noreferrer"></a></p>
         </div>
       </div>
     </footer>
