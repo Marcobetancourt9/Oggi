@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 
 // Importa tus imágenes (asegúrate de tener estas imágenes en tu proyecto)
@@ -7,6 +8,25 @@ import lentesContactoImg from '../images/lentes-contacto.jpg';
 import lentesSolImg from '../images/lentes-sol.png';
 
 const Inicio = () => {
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (category) => {
+    // Define las rutas según la categoría
+    switch(category) {
+      case 'monturas':
+        navigate('/monturas');
+        break;
+      case 'lentes-contacto':
+        navigate('/lentescontacto');
+        break;
+      case 'lentes-sol':
+        navigate('/lentessol');
+        break;
+      default:
+        navigate('/productos');
+    }
+  };
+
   return (
     <div className="inicio-container">
       {/* Hero Section con efecto parallax */}
@@ -32,7 +52,12 @@ const Inicio = () => {
             <div className="category-content">
               <h3 className="category-title">Monturas</h3>
               <p className="category-description">Las últimas tendencias en monturas para todos los estilos</p>
-              <button className="category-button">Comprar ahora</button>
+              <button 
+                className="category-button"
+                onClick={() => handleCategoryClick('monturas')}
+              >
+                Comprar ahora
+              </button>
             </div>
           </div>
 
@@ -41,7 +66,12 @@ const Inicio = () => {
             <div className="category-content">
               <h3 className="category-title">Lentes de Contacto</h3>
               <p className="category-description">Comodidad y claridad para tus ojos</p>
-              <button className="category-button">Comprar ahora</button>
+              <button 
+                className="category-button"
+                onClick={() => handleCategoryClick('lentes-contacto')}
+              >
+                Comprar ahora
+              </button>
             </div>
           </div>
 
@@ -50,7 +80,12 @@ const Inicio = () => {
             <div className="category-content">
               <h3 className="category-title">Lentes de sol</h3>
               <p className="category-description">Protección UV con estilo</p>
-              <button className="category-button">Comprar ahora</button>
+              <button 
+                className="category-button"
+                onClick={() => handleCategoryClick('lentes-sol')}
+              >
+                Comprar ahora
+              </button>
             </div>
           </div>
         </div>

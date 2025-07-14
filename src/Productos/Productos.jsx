@@ -1,5 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { useNavigate } from 'react-router-dom';
 import styles from './Productos.module.css';
 
 // Importación optimizada de imágenes
@@ -18,40 +19,46 @@ const productos = [
     nombre: 'Lentes de Sol',
     descripcion: 'Protección UV con estilo moderno.',
     imagen: importImages.lentesSol,
+    ruta: '/lentessol'
   },
   {
     id: 2,
     nombre: 'Lentes Recetados',
     descripcion: 'Personalizados según tu fórmula.',
     imagen: importImages.lentesRecetados,
+    ruta: '/lentesrecetados'
   },
   {
     id: 3,
     nombre: 'Gafas para Niños',
     descripcion: 'Resistentes y seguras para los más pequeños.',
     imagen: importImages.gafasNinos,
+    ruta: '/gafasninos'
   },
   {
     id: 4,
     nombre: 'Lentes de Contacto',
     descripcion: 'Cómodos y fáciles de usar a diario.',
     imagen: importImages.lentesContacto,
+    ruta: '/lentescontacto'
   },
   {
     id: 5,
     nombre: 'Estuches para Lentes',
     descripcion: 'Protege tus gafas con estilo.',
     imagen: importImages.estuches,
+    ruta: '/estuches'
   },
   {
     id: 6,
     nombre: 'Líquido para Lentes',
     descripcion: 'Solución limpiadora y desinfectante.',
     imagen: importImages.liquidoLentes,
+    ruta: '/liquidolentes'
   },
 ];
 
-const ProductoCard = ({ producto }) => (
+const ProductoCard = ({ producto, onVerMasClick }) => (
   <motion.div 
     className={styles.card}
     whileHover={{ scale: 1.05 }}
@@ -76,6 +83,7 @@ const ProductoCard = ({ producto }) => (
         whileTap={{ scale: 0.95 }}
         className={styles.boton}
         aria-label={`Ver detalles de ${producto.nombre}`}
+        onClick={() => onVerMasClick(producto.ruta)}
       >
         Ver más
       </motion.button>
@@ -84,6 +92,12 @@ const ProductoCard = ({ producto }) => (
 );
 
 const Productos = () => {
+  const navigate = useNavigate();
+
+  const handleVerMasClick = (ruta) => {
+    navigate(ruta);
+  };
+
   return (
     <section className={styles.productosSection} id="productos">
       <motion.h2 
@@ -100,6 +114,7 @@ const Productos = () => {
           <ProductoCard 
             key={`producto-${producto.id}`}
             producto={producto}
+            onVerMasClick={handleVerMasClick}
           />
         ))}
       </div>
