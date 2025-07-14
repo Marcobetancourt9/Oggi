@@ -35,7 +35,7 @@ const Footer = () => {
           <div className="footer-column">
             <h3 className="footer-title">Atención al cliente</h3>
             <ul className="footer-links">
-              <li><a href="/faq"><span className="link-icon">•</span> Preguntas Frecuentes</a></li>
+              <li><a href="/preguntas"><span className="link-icon">•</span> Preguntas Frecuentes</a></li>
               <li><a href="/envios"><span className="link-icon">•</span> Envíos y Entregas</a></li>
               <li><a href="/trabaja-con-nosotros"><span className="link-icon">•</span> Trabaja con Nosotros</a></li>
               <li><a href="/blog"><span className="link-icon">•</span> Blog Óptico</a></li>

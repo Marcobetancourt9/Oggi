@@ -9,7 +9,8 @@ import '@fortawesome/fontawesome-free/css/all.min.css';
 import WhatsApp from './Whatsapp/Whatsapp';
 import Contacto from './Contacto/Contacto';
 import Productos from './Productos/Productos';
-//import Menu from './Menu/Menu';
+import Preguntas from './Preguntas/Preguntas';
+import Compra from './Compra/Compra';
 import './App.css';
 
 export default function App() {
@@ -40,6 +41,8 @@ export default function App() {
             <Route path="/lentescontacto" element={<LentesContacto />} />
             <Route path="/contacto" element={<Contacto />} />
             <Route path="/productos" element={<Productos />} />
+            <Route path="/preguntas" element={<Preguntas />} />
+            <Route path="/compra" element={<Compra />} />
           </Routes> 
           </main>
         <Footer />
