@@ -12,6 +12,7 @@ import Productos from './Productos/Productos';
 import Preguntas from './Preguntas/Preguntas';
 import Compra from './Compra/Compra';
 import Blog from './Blog/Blog';
+import LentesSol from './LentesSol/LentesSol';
 import './App.css';
 
 export default function App() {
@@ -45,6 +46,7 @@ export default function App() {
             <Route path="/preguntas" element={<Preguntas />} />
             <Route path="/compra" element={<Compra />} />
             <Route path="/blog" element={<Blog />} />
+            <Route path="/lentessol" element={<LentesSol />} />
           </Routes> 
           </main>
         <Footer />

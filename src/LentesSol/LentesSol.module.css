@@ -1,13 +1,11 @@
-/* Monturas.module.css */
-
-.monturasContainer {
+.lentesContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 80px 20px;
   width: 100%;
   box-sizing: border-box;
-  background: linear-gradient(135deg, #f9fafb 0%, #f0f4f8 100%);
+  background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
   min-height: 100vh;
 }
 
@@ -23,7 +21,7 @@
 .headerSection {
   width: 100%;
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 40px;
   position: relative;
 }
 
@@ -32,7 +30,7 @@
   display: block;
   width: 100px;
   height: 4px;
-  background: linear-gradient(90deg, #043d99, #000000);
+  background: linear-gradient(90deg, #f59e0b, #000000);
   margin: 25px auto 0;
   border-radius: 2px;
 }
@@ -45,14 +43,14 @@
   margin-bottom: 15px;
   letter-spacing: -0.5px;
   text-shadow: 0 2px 4px rgba(0,0,0,0.05);
-  background: linear-gradient(90deg, #043d99, #000000);
+  background: linear-gradient(90deg, #f59e0b, #000000);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 
 .subtitle {
-  color: #7f8c8d;
+  color: #64748b;
   font-size: 1.3rem;
   margin-bottom: 30px;
   max-width: 700px;
@@ -61,9 +59,45 @@
   line-height: 1.6;
 }
 
-.monturasGrid {
+/* Estilos del menú de categorías */
+.menuCategories {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 40px;
+  width: 100%;
+  max-width: 900px;
+}
+
+.categoryButton {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  background-color: #ffffff;
+  color: #334155;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.categoryButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+  color: #f59e0b;
+}
+
+.categoryButton.active {
+  background-color: #f59e0b;
+  color: white;
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+}
+
+.lentesGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   gap: 40px;
   width: 100%;
   padding: 20px 0;
@@ -72,13 +106,14 @@
 .noResults {
   margin-top: 60px;
   font-size: 1.3rem;
-  color: #7f8c8d;
+  color: #64748b;
   text-align: center;
   width: 100%;
   padding: 30px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  border: 1px solid #e2e8f0;
 }
 
 /* Animaciones */
@@ -93,50 +128,15 @@
   }
 }
 
-/* Efectos hover para las tarjetas (deberás aplicarlos al componente ProductCard) */
-.productCard {
-  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-}
-
-.productCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-}
-
-/* Mejoras para la search bar */
-.searchBar {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  position: relative;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  border-radius: 50px;
-  overflow: hidden;
-}
-
-.searchBar input {
-  width: 100%;
-  padding: 18px 25px;
-  border: none;
-  font-size: 1.1rem;
-  background: white;
-  transition: all 0.3s;
-}
-
-.searchBar input:focus {
-  outline: none;
-  box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.3);
-}
-
 /* Responsive */
 @media (max-width: 1200px) {
-  .monturasGrid {
+  .lentesGrid {
     gap: 30px;
   }
 }
 
 @media (max-width: 992px) {
-  .monturasContainer {
+  .lentesContainer {
     padding: 70px 20px;
   }
   
@@ -144,7 +144,7 @@
     font-size: 2.5rem;
   }
   
-  .monturasGrid {
+  .lentesGrid {
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   }
 }
@@ -162,28 +162,42 @@
   .headerSection::after {
     width: 80px;
   }
+
+  .menuCategories {
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+
+  .categoryButton {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+  }
 }
 
 @media (max-width: 576px) {
-  .monturasContainer {
+  .lentesContainer {
     padding: 50px 15px;
   }
   
   .mainTitle {
-    font-size: 1.8rem;
+    font-size: 1.9rem;
   }
   
   .subtitle {
     font-size: 1rem;
   }
 
-  .monturasGrid {
+  .lentesGrid {
     grid-template-columns: 1fr;
     gap: 25px;
   }
 
-  .searchBar input {
-    padding: 15px 20px;
-    font-size: 1rem;
+  .menuCategories {
+    gap: 6px;
+  }
+
+  .categoryButton {
+    padding: 6px 12px;
+    font-size: 0.8rem;
   }
 }
