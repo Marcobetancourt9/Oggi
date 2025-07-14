@@ -530,3 +530,91 @@ body {
     font-size: 1rem;
   }
 }
+/* Estilos para las estrellas */
+.starRating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.starButton {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  outline: none;
+}
+
+.starIcon {
+  width: 28px;
+  height: 28px;
+  transition: all 0.2s ease;
+}
+
+.starFilled {
+  fill: #f59e0b;
+  filter: drop-shadow(0 0 2px rgba(245, 158, 11, 0.5));
+}
+
+.starEmpty {
+  fill: #d1d5db;
+  opacity: 0.7;
+}
+
+.ratingText {
+  font-size: 14px;
+  color: #4b5563;
+  margin-left: 8px;
+}
+
+/* Estilos para las estrellas en las reseñas */
+.reviewStars {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  margin-top: 4px;
+}
+
+.reviewStar {
+  width: 18px;
+  height: 18px;
+}
+
+.reviewRatingText {
+  font-size: 13px;
+  color: #6b7280;
+  margin-left: 6px;
+}
+/* Agrega esto en tu archivo Blog.module.css */
+
+.submitIcon {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  transition: transform 0.2s ease;
+}
+
+.submitButton:hover .submitIcon {
+  transform: translateX(2px) translateY(-1px);
+}
+
+/* Si quieres una animación más llamativa al hacer hover */
+.submitButton:hover .submitIcon {
+  animation: fly 0.5s ease infinite alternate;
+}
+
+@keyframes fly {
+  0% {
+    transform: translateX(0) translateY(0);
+  }
+  100% {
+    transform: translateX(3px) translateY(-2px);
+  }
+}
+
+/* O esta versión más sutil si prefieres */
+.submitButton:hover .submitIcon {
+  transform: translateX(2px);
+  transition: transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}

@@ -127,7 +127,7 @@ const Blog = () => {
             <div className={styles.inputGroup}>
               <label className={styles.inputLabel}>CALIFICACIÓN</label>
               <div className={styles.ratingContainer}>
-                <div className={styles.ratingStars}>
+                <div className={styles.starRating}>
                   {[1, 2, 3, 4, 5].map((star) => (
                     <button
                       key={star}
@@ -139,53 +139,19 @@ const Blog = () => {
                       aria-label={`Calificar con ${star} ${star === 1 ? 'estrella' : 'estrellas'}`}
                     >
                       <StarIcon
-                        className={
+                        className={`${styles.starIcon} ${
                           (hoverRating || newReview.rating) >= star 
-                            ? styles.starIconFilled 
-                            : hoverRating >= star
-                              ? styles.starIconHover
-                              : styles.starIconEmpty
-                        }
+                            ? styles.starFilled 
+                            : styles.starEmpty
+                        }`}
                       />
                     </button>
                   ))}
-                  <span className={styles.ratingText}>
-                    {newReview.rating > 0 
-                      ? `${ratingDescriptions[newReview.rating - 1]} (${newReview.rating}/5)`
-                      : 'Selecciona tu calificación'}
-                  </span>
                 </div>
-                <div className={styles.ratingScale}>
-                  <span 
-                    className={`${styles.ratingScaleItem} ${(hoverRating || newReview.rating) >= 1 ? 'active' : ''}`}
-                    onClick={() => handleRatingChange(1)}
-                  >
-                    Muy pobre
-                  </span>
-                  <span 
-                    className={`${styles.ratingScaleItem} ${(hoverRating || newReview.rating) >= 2 ? 'active' : ''}`}
-                    onClick={() => handleRatingChange(2)}
-                  >
-                    Pobre
-                  </span>
-                  <span 
-                    className={`${styles.ratingScaleItem} ${(hoverRating || newReview.rating) >= 3 ? 'active' : ''}`}
-                    onClick={() => handleRatingChange(3)}
-                  >
-                    Aceptable
-                  </span>
-                  <span 
-                    className={`${styles.ratingScaleItem} ${(hoverRating || newReview.rating) >= 4 ? 'active' : ''}`}
-                    onClick={() => handleRatingChange(4)}
-                  >
-                    Muy bueno
-                  </span>
-                  <span 
-                    className={`${styles.ratingScaleItem} ${(hoverRating || newReview.rating) >= 5 ? 'active' : ''}`}
-                    onClick={() => handleRatingChange(5)}
-                  >
-                    Excelente
-                  </span>
+                <div className={styles.ratingText}>
+                  {newReview.rating > 0 
+                    ? `${ratingDescriptions[newReview.rating - 1]} (${newReview.rating}/5)`
+                    : 'Selecciona tu calificación'}
                 </div>
               </div>
             </div>
@@ -214,7 +180,7 @@ const Blog = () => {
                 'Enviando Evaluación...'
               ) : (
                 <>
-                  <PaperAirplaneIcon style={{ width: '20px', height: '20px', marginRight: '10px' }} />
+                  <PaperAirplaneIcon className={styles.submitIcon} />
                   Publicar Evaluación
                 </>
               )}
@@ -241,19 +207,17 @@ const Blog = () => {
                     <div className={styles.reviewMeta}>
                       <h3 className={styles.reviewName}>{review.name}</h3>
                       <time className={styles.reviewDate}>{formatDate(review.date)}</time>
-                      <div className={styles.reviewRating}>
-                        <div className={styles.reviewStars}>
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <StarIcon
-                              key={star}
-                              className={styles.reviewStar}
-                              style={{ 
-                                opacity: review.rating >= star ? 1 : 0.3,
-                                filter: review.rating >= star ? 'drop-shadow(0 0 2px rgba(245, 158, 11, 0.5))' : 'none'
-                              }}
-                            />
-                          ))}
-                        </div>
+                      <div className={styles.reviewStars}>
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <StarIcon
+                            key={star}
+                            className={`${styles.reviewStar} ${
+                              review.rating >= star 
+                                ? styles.starFilled 
+                                : styles.starEmpty
+                            }`}
+                          />
+                        ))}
                         <span className={styles.reviewRatingText}>
                           {ratingDescriptions[review.rating - 1]}
                         </span>
