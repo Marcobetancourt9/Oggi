@@ -59,7 +59,7 @@ export default function App() {
             <Route path="/lentesrecetados" element={<Recetados />} />
             <Route path="/liquidolentes" element={<Liquido />} />
             <Route path="/login" element={<LoginForm />} />
-            <Route path="/register" element={<Registro />} />
+            <Route path="/registro" element={<Registro />} />
             <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
           </Routes> 
           </main>
