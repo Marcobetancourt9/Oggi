@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './Ninos.module.css';
-import SearchBar from './SearchBar';
-import ProductCard from './ProductCard';
+import SearchBar from '../SearchBar';
+import ProductCard from '../ProductCard';
 
 const Ninos = () => {
   // Datos memoizados de lentes para niños

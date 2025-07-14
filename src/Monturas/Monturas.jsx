@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import styles from './Monturas.module.css';
-import SearchBar from './SearchBar';
-import ProductCard from './ProductCard'; // Asumo que tienes este componente
+import SearchBar from '../SearchBar';
+import ProductCard from '../ProductCard'; // Asumo que tienes este componente
 
 const Monturas = () => {
   // Datos de las monturas disponibles

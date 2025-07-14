@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './LentesContacto.module.css';
-import SearchBar from './SearchBar';
-import ProductCard from './ProductCard';
+import SearchBar from '../SearchBar';
+import ProductCard from '../ProductCard';
 
 const LentesContacto = () => {
   // Datos memoizados de los lentes de contacto

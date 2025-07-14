@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import styles from './Estuches.module.css';
-import SearchBar from './SearchBar';
-import ProductCard from './ProductCard';
+import SearchBar from '../SearchBar';
+import ProductCard from '../ProductCard';
 
 const Estuches = () => {
   // Datos memoizados de los estuches
