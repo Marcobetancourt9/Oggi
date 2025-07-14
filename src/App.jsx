@@ -18,6 +18,9 @@ import Niños from './Niños/Niños';
 import Recetados from './Recetados/Recetados';
 import Liquido from './Liquido/Liquido';
 import './App.css';
+import LoginForm from './Login/Login';
+import Registro from './Registro/Registro';
+import RecuperarContrasena from './Recuperar/recuperar';
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -55,6 +58,9 @@ export default function App() {
             <Route path="/gafasninos" element={<Niños />} />
             <Route path="/lentesrecetados" element={<Recetados />} />
             <Route path="/liquidolentes" element={<Liquido />} />
+            <Route path="/login" element={<LoginForm />} />
+            <Route path="/register" element={<Registro />} />
+            <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
           </Routes> 
           </main>
         <Footer />

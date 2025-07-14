@@ -1,7 +1,48 @@
 import React from 'react';
 import styles from './ProductCard.module.css';
+import { useNavigate } from 'react-router-dom';
+import { db } from '../credentials';
+import { collection, addDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 const ProductCard = ({ imageSrc, title, price, description, details }) => {
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  const handleBuyClick = async () => {
+    try {
+      const user = auth.currentUser;
+      
+      if (!user) {
+        alert("Por favor inicia sesión para comprar");
+        navigate('/login');
+        return;
+      }
+
+      // Crear objeto producto para agregar al carrito
+      const productData = {
+        name: title,
+        price: price,
+        quantity: 1,
+        description: description,
+        image: imageSrc,
+        details: details,
+        uid: user.uid,
+        userEmail: user.email,
+        createdAt: new Date()
+      };
+
+      // Agregar a la colección 'cart' en Firestore
+      await addDoc(collection(db, "cart"), productData);
+      
+      // Navegar a la página de compra
+      navigate('/compra');
+    } catch (error) {
+      console.error("Error al agregar producto al carrito: ", error);
+      alert("Ocurrió un error al agregar el producto al carrito");
+    }
+  };
+
   return (
     <div className={styles.productCard}>
       <div className={styles.imageContainer}>
@@ -21,7 +62,12 @@ const ProductCard = ({ imageSrc, title, price, description, details }) => {
           ))}
         </div>
         
-        <button className={styles.viewButton}>Ver detalles</button>
+        <button 
+          className={styles.viewButton}
+          onClick={handleBuyClick}
+        >
+          Comprar
+        </button>
       </div>
     </div>
   );

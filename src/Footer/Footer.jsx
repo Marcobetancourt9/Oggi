@@ -10,17 +10,6 @@ const Footer = () => {
       <div className="footer-wave"></div>
       
       <div className="footer-container">
-        <div className="footer-top">
-          <div className="footer-newsletter">
-            <h3>Suscríbete a nuestro boletín</h3>
-            <p>Recibe ofertas exclusivas y novedades</p>
-            <form className="newsletter-form">
-              <input type="email" placeholder="Tu correo electrónico" required />
-              <button type="submit">Suscribirse</button>
-            </form>
-          </div>
-        </div>
-
         <div className="footer-grid">
           <div className="footer-column">
             <h3 className="footer-title">Servicios</h3>

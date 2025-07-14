@@ -1,15 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { db } from "../../credentials.js";
-import {
-  collection,
-  getDocs,
-  query,
-  where,
-  addDoc,
-  deleteDoc,
-  doc,
-  writeBatch,
-} from "firebase/firestore";
+import { collection, getDocs, query, where, deleteDoc, doc, writeBatch, addDoc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import styles from "./Compra.module.css";
@@ -27,15 +18,16 @@ const Compra = () => {
   const [patientName, setPatientName] = useState("");
   const [patientAge, setPatientAge] = useState("");
   const [prescriptionRequired, setPrescriptionRequired] = useState(false);
-
   const auth = getAuth();
 
+  // Datos de sucursales
   const clinicBranches = [
     { id: 1, name: 'Sede Principal - Centro Médico', address: 'Av. Principal, Torre Médica, Piso 3', hours: 'Lun-Vie: 8am-6pm' },
     { id: 2, name: 'Sede Norte - Plaza Comercial', address: 'CC Plaza Norte, Nivel L1', hours: 'Lun-Sab: 9am-7pm' },
     { id: 3, name: 'Sede Este - Urbanización', address: 'Calle 2 con Av. 5, Residencias Vista Bella', hours: 'Mar-Dom: 8am-5pm' }
   ];
 
+  // Métodos de pago
   const paymentMethods = [
     { id: 1, name: 'Efectivo', icon: <FaCreditCard /> },
     { id: 2, name: 'Transferencia Bancaria', icon: <FaCreditCard /> },
@@ -43,113 +35,133 @@ const Compra = () => {
     { id: 4, name: 'Seguro Médico', icon: <FaCreditCard /> }
   ];
 
+  // Horarios disponibles
   const availableTimes = [
     "8:00 AM", "9:00 AM", "10:00 AM", "11:00 AM", 
     "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM"
   ];
 
-  const fetchCart = async (currentUser) => {
-    if (!currentUser) return;
-
+  // Cargar carrito del usuario
+  const fetchUserCart = async (userId) => {
     try {
       const cartRef = collection(db, "cart");
-      const q = query(cartRef, where("uid", "==", currentUser.uid));
+      const q = query(cartRef, where("uid", "==", userId));
       const querySnapshot = await getDocs(q);
 
-      const items = querySnapshot.docs.map((doc) => ({
-        ...doc.data(),
+      const userCart = querySnapshot.docs.map(doc => ({
         id: doc.id,
+        ...doc.data(),
         price: Number(doc.data().price),
-        quantity: Number(doc.data().quantity),
+        quantity: Number(doc.data().quantity)
       }));
 
-      setCart(items);
+      setCart(userCart);
     } catch (error) {
       console.error("Error al cargar el carrito:", error);
     }
   };
 
+  // Verificar estado de autenticación
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       if (currentUser) {
-        const userData = {
+        setUser({
           uid: currentUser.uid,
-          email: currentUser.email || 'No proporcionado',
-          displayName: currentUser.displayName || 'No proporcionado'
-        };
-        setUser(userData);
-        fetchCart(userData);
-        setPatientName(userData.displayName);
+          email: currentUser.email,
+          displayName: currentUser.displayName
+        });
+        setPatientName(currentUser.displayName || "");
+        fetchUserCart(currentUser.uid);
+      } else {
+        navigate('/login');
       }
       setIsLoading(false);
     });
+
     return () => unsubscribe();
-  }, []);
+  }, [navigate]);
 
-  if (isLoading) return (
-    <div className={styles.loadingContainer}>
-      <div className={styles.loadingSpinner}></div>
-      <p>Cargando tu información...</p>
-    </div>
-  );
-
-  const addToCartAndUpdate = async (product) => {
-    try {
-      await addDoc(collection(db, "cart"), {
-        ...product,
-        uid: user.uid,
-        createdAt: new Date()
-      });
-      await fetchCart(user);
-    } catch (error) {
-      console.error("Error al agregar al carrito:", error);
-    }
-  };
-
+  // Eliminar producto del carrito
   const deleteFromCart = async (itemId) => {
     try {
       await deleteDoc(doc(db, "cart", itemId));
-      await fetchCart(user);
+      fetchUserCart(user.uid);
     } catch (error) {
       console.error("Error al eliminar el producto:", error);
+      alert("Ocurrió un error al eliminar el producto");
     }
   };
 
+  // Vaciar carrito completo
   const deleteAllFromCart = async () => {
     try {
       if (cart.length === 0) return;
+      
       const batch = writeBatch(db);
       cart.forEach((item) => {
         const itemRef = doc(db, "cart", item.id);
         batch.delete(itemRef);
       });
+      
       await batch.commit();
-      await fetchCart(user);
+      fetchUserCart(user.uid);
     } catch (error) {
-      console.error("Error al eliminar todos los productos:", error);
+      console.error("Error al vaciar el carrito:", error);
+      alert("Ocurrió un error al vaciar el carrito");
     }
   };
 
-  const calculateSubtotal = () => cart.reduce((acc, item) => acc + item.price * item.quantity, 0);
-
-  const calculateTotal = () => calculateSubtotal();
-
-  const generarMensajeWhatsApp = () => {
-    let mensaje = "Hola, quiero confirmar mi compra en la óptica:\n\n";
-    mensaje += `Información del paciente:\nNombre: ${patientName}\nEdad: ${patientAge || 'No especificada'}\nEmail: ${user?.email || 'No proporcionado'}\n\n`;
-    mensaje += "Productos seleccionados:\n";
-    cart.forEach((item) => {
-      mensaje += `${item.quantity} x ${item.name} ($${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}\n`;
-      if (item.details) mensaje += `Detalles: ${item.details}\n`;
-    });
-    mensaje += `\nInformación de la cita:\nSucursal: ${selectedBranch?.name || 'No seleccionada'}\nDirección: ${selectedBranch?.address || 'No seleccionada'}\n`;
-    mensaje += `Fecha: ${appointmentDate || 'No seleccionada'}\nHora: ${appointmentTime || 'No seleccionada'}\n`;
-    mensaje += `\nResumen de pago:\nTotal: $${calculateTotal().toFixed(2)}\nMétodo de pago: ${paymentMethod || 'No seleccionado'}\n`;
-    mensaje += `Receta médica requerida: ${prescriptionRequired ? 'Sí' : 'No'}\n`;
-    return mensaje;
+  // Calcular subtotal
+  const calculateSubtotal = () => {
+    return cart.reduce((total, item) => total + (item.price * item.quantity), 0);
   };
 
+  // Calcular total (incluye consulta si es necesario)
+  const calculateTotal = () => {
+    let total = calculateSubtotal();
+    if (prescriptionRequired) total += 50; // Costo de consulta
+    return total;
+  };
+
+  // Generar mensaje para WhatsApp
+  const generarMensajeWhatsApp = () => {
+    let mensaje = `Hola, quiero confirmar mi compra en Óptica Oggi:\n\n`;
+    mensaje += `*Información del paciente:*\n`;
+    mensaje += `Nombre: ${patientName}\n`;
+    mensaje += `Edad: ${patientAge || 'No especificada'}\n`;
+    mensaje += `Email: ${user?.email || 'No proporcionado'}\n\n`;
+    
+    mensaje += `*Productos seleccionados:*\n`;
+    cart.forEach((item) => {
+      mensaje += `- ${item.quantity} x ${item.name} ($${item.price.toFixed(2)})\n`;
+      if (item.details) {
+        Object.entries(item.details).forEach(([key, value]) => {
+          mensaje += `  ${key}: ${value}\n`;
+        });
+      }
+    });
+    
+    mensaje += `\n*Información de la cita:*\n`;
+    mensaje += `Sucursal: ${selectedBranch?.name || 'No seleccionada'}\n`;
+    mensaje += `Dirección: ${selectedBranch?.address || 'No seleccionada'}\n`;
+    mensaje += `Fecha: ${appointmentDate || 'No seleccionada'}\n`;
+    mensaje += `Hora: ${appointmentTime || 'No seleccionada'}\n\n`;
+    
+    mensaje += `*Resumen de pago:*\n`;
+    mensaje += `Subtotal: $${calculateSubtotal().toFixed(2)}\n`;
+    if (prescriptionRequired) {
+      mensaje += `Consulta oftalmológica: $50.00\n`;
+    }
+    mensaje += `TOTAL: $${calculateTotal().toFixed(2)}\n`;
+    mensaje += `Método de pago: ${paymentMethod || 'No seleccionado'}\n`;
+    mensaje += `Receta médica requerida: ${prescriptionRequired ? 'Sí' : 'No'}`;
+
+    return encodeURIComponent(mensaje);
+  };
+
+  // Confirmar compra por WhatsApp
   const handleWhatsAppClick = async () => {
+    // Validaciones
     if (cart.length === 0) {
       alert("🛒 Tu carrito está vacío. Por favor agrega productos antes de continuar.");
       return;
@@ -176,42 +188,65 @@ const Compra = () => {
     }
 
     try {
-      await addDoc(collection(db, 'ordenes'), {
-        paciente: patientName,
-        edad: patientAge,
-        userEmail: user?.email || 'No proporcionado',
-        productos: cart.map(item => ({
+      // Guardar la orden en Firestore
+      await addDoc(collection(db, 'orders'), {
+        patient: {
+          name: patientName,
+          age: patientAge,
+          email: user.email
+        },
+        products: cart.map(item => ({
           name: item.name,
           price: item.price,
           quantity: item.quantity,
-          details: item.details || null
+          details: item.details
         })),
-        sucursal: selectedBranch.name,
-        direccion: selectedBranch.address,
-        fechaCita: appointmentDate,
-        horaCita: appointmentTime,
-        metodoPago: paymentMethod,
-        recetaRequerida: prescriptionRequired,
-        total: calculateTotal(),
-        fechaOrden: new Date(),
-        estado: 'pendiente'
+        branch: {
+          id: selectedBranch.id,
+          name: selectedBranch.name,
+          address: selectedBranch.address
+        },
+        appointment: {
+          date: appointmentDate,
+          time: appointmentTime
+        },
+        payment: {
+          method: paymentMethod,
+          total: calculateTotal()
+        },
+        prescriptionRequired,
+        status: 'pending',
+        createdAt: new Date(),
+        userId: user.uid
       });
 
-      const mensaje = generarMensajeWhatsApp();
-      const phoneNumber = "584241234567";
-      window.open(`https://wa.me/${phoneNumber}?text=${encodeURIComponent(mensaje)}`, "_blank");
+      // Vaciar el carrito después de confirmar
+      await deleteAllFromCart();
+
+      // Abrir WhatsApp con el mensaje
+      const phoneNumber = "584241234567"; // Reemplaza con tu número
+      window.open(`https://wa.me/${phoneNumber}?text=${generarMensajeWhatsApp()}`, "_blank");
 
     } catch (error) {
-      console.error('Error al guardar la orden:', error);
+      console.error('Error al confirmar la orden:', error);
       alert('❌ Ocurrió un error al procesar tu orden. Por favor intenta nuevamente.');
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Cargando tu carrito...</p>
+      </div>
+    );
+  }
+
   return (
     <div className={styles.compraContainer}>
       <div className={styles.header}>
-        <h1 className={styles.title}><FaEye /> Óptica Visión Clara</h1>
-        <p className={styles.subtitle}>Confirma tu pedido y agenda tu cita</p>
+        <h1 className={styles.title}><FaEye /> Óptica Oggi</h1>
+        <p className={styles.subtitle}>Finaliza tu compra</p>
       </div>
 
       {cart.length === 0 ? (
@@ -229,33 +264,56 @@ const Compra = () => {
         </div>
       ) : (
         <div className={styles.cartContent}>
+          {/* Sección de productos */}
           <div className={styles.cartSection}>
-            <h3 className={styles.sectionHeader}>Productos Seleccionados</h3>
-            <ul className={styles.cartList}>
-              {cart.map((item, index) => (
-                <li key={`${item.id}-${index}`} className={styles.cartItem}>
-                  <div className={styles.itemHeader}>
-                    <span className={styles.itemName}>
-                      <FaEye className={styles.itemIcon} /> 
-                      {item.quantity} x {item.name}
-                    </span>
-                    <span className={styles.itemPrice}>${(item.quantity * item.price).toFixed(2)}</span>
+            <h3 className={styles.sectionHeader}>Tus Productos</h3>
+            <div className={styles.cartList}>
+              {cart.map((item) => (
+                <div key={item.id} className={styles.cartItem}>
+                  <div className={styles.itemImage}>
+                    <img src={item.image} alt={item.name} />
                   </div>
-                  {item.details && <div className={styles.itemDetails}>Especificaciones: ${item.details}</div>}
-                  <button 
-                    className={styles.deleteButton} 
-                    onClick={() => deleteFromCart(item.id)}
-                  >
-                    <FaTrash /> Eliminar
-                  </button>
-                </li>
+                  <div className={styles.itemDetails}>
+                    <h4>{item.name}</h4>
+                    <p className={styles.itemDescription}>{item.description}</p>
+                    <div className={styles.itemSpecs}>
+                      {Object.entries(item.details || {}).map(([key, value]) => (
+                        <div key={key} className={styles.specItem}>
+                          <span className={styles.specLabel}>{key}:</span>
+                          <span className={styles.specValue}>{value}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  <div className={styles.itemActions}>
+                    <span className={styles.itemPrice}>${(item.price * item.quantity).toFixed(2)}</span>
+                    <span className={styles.itemQuantity}>Cantidad: {item.quantity}</span>
+                    <button 
+                      onClick={() => deleteFromCart(item.id)}
+                      className={styles.deleteButton}
+                    >
+                      <FaTrash /> Eliminar
+                    </button>
+                  </div>
+                </div>
               ))}
-            </ul>
-            <button className={styles.clearButton} onClick={deleteAllFromCart}>
-              <FaTrash /> Vaciar Carrito
-            </button>
+            </div>
+
+            <div className={styles.cartSummary}>
+              <div className={styles.summaryRow}>
+                <span>Subtotal:</span>
+                <span>${calculateSubtotal().toFixed(2)}</span>
+              </div>
+              <button 
+                onClick={deleteAllFromCart}
+                className={styles.clearButton}
+              >
+                <FaTrash /> Vaciar Carrito
+              </button>
+            </div>
           </div>
 
+          {/* Sección del formulario */}
           <div className={styles.formSection}>
             <div className={styles.formGroup}>
               <h3 className={styles.sectionHeader}><FaUser /> Información del Paciente</h3>
@@ -361,12 +419,10 @@ const Compra = () => {
                   </div>
                 ))}
               </div>
-              {!paymentMethod && (
-                <p className={styles.validationMessage}>Por favor selecciona un método de pago</p>
-              )}
             </div>
           </div>
 
+          {/* Resumen de la orden */}
           <div className={styles.summarySection}>
             <h3 className={styles.sectionHeader}>Resumen de la Orden</h3>
             <div className={styles.summaryContent}>
@@ -374,12 +430,14 @@ const Compra = () => {
                 <span>Subtotal:</span>
                 <span>${calculateSubtotal().toFixed(2)}</span>
               </div>
+              
               {prescriptionRequired && (
                 <div className={styles.summaryRow}>
                   <span>Consulta oftalmológica:</span>
                   <span>$50.00</span>
                 </div>
               )}
+              
               <div className={styles.totalRow}>
                 <span>TOTAL:</span>
                 <span>${calculateTotal().toFixed(2)}</span>
@@ -388,7 +446,7 @@ const Compra = () => {
 
             <button 
               className={styles.confirmButton} 
-              onClick={handleWhatsAppClick} 
+              onClick={handleWhatsAppClick}
               disabled={!selectedBranch || !paymentMethod || !appointmentDate || !appointmentTime || !patientName}
             >
               <FaWhatsapp /> Confirmar Orden por WhatsApp
