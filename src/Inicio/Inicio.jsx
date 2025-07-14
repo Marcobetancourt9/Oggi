@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import './Inicio.css';
 
 // Importa tus imágenes (asegúrate de tener estas imágenes en tu proyecto)
-import monturasImg from '../images/monturas.jpg';
+import monturasImg from '../images/monturas.JPG';
 import lentesContactoImg from '../images/lentes-contacto.jpg';
 import lentesSolImg from '../images/lentes-sol.png';
 
