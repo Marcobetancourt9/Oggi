@@ -1,13 +1,11 @@
-'use client';
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import styles from './LentesContacto.module.css';
 import SearchBar from './SearchBar';
 import ProductCard from './ProductCard';
 
 const LentesContacto = () => {
-  // Datos de los lentes de contacto disponibles
-  const lentes = [
+  // Datos memoizados de los lentes de contacto
+  const lentes = useMemo(() => [
     {
       name: 'Lentes Diarios ComfortPlus',
       imageSrc: '/images/lentes/diarios-comfort.jpg',
@@ -109,9 +107,9 @@ const LentesContacto = () => {
         'Especial': 'Diseño estabilizado'
       }
     }
-  ];
+  ], []);
 
-const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
   const [filteredLentes, setFilteredLentes] = useState(lentes);
 
   useEffect(() => {
@@ -127,11 +125,11 @@ const [searchTerm, setSearchTerm] = useState('');
             ([key, value]) => 
               key.toLowerCase().includes(term) || 
               String(value).toLowerCase().includes(term)
-          ) // Este paréntesis estaba faltando
+          )
       );
       setFilteredLentes(filtered);
     }
-  }, [searchTerm, lentes]); // Añadí lentes a las dependencias
+  }, [searchTerm, lentes]);
 
   return (
     <main className={styles.lentesContainer}>
@@ -145,7 +143,7 @@ const [searchTerm, setSearchTerm] = useState('');
           </p>
           <SearchBar 
             value={searchTerm} 
-            onChange={setSearchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             placeholder="Buscar por tipo, material, uso especial..."
           />
         </header>
@@ -158,7 +156,7 @@ const [searchTerm, setSearchTerm] = useState('');
           <div className={styles.lentesGrid}>
             {filteredLentes.map((lente, index) => (
               <ProductCard
-                key={index}
+                key={`${lente.name}-${index}`}
                 imageSrc={lente.imageSrc}
                 title={lente.name}
                 price={lente.price}

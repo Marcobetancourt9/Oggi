@@ -38,7 +38,6 @@ export default function App() {
             <Route path="/monturas" element={<Monturas />} />
             <Route path="/lentescontacto" element={<LentesContacto />} />
             <Route path="/contacto" element={<Contacto />} />
-            {/*<Route path="/menu" element={<Menu />} />*/}
           </Routes> 
           </main>
         <Footer />
