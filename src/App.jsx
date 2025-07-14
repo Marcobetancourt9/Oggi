@@ -11,6 +11,7 @@ import Contacto from './Contacto/Contacto';
 import Productos from './Productos/Productos';
 import Preguntas from './Preguntas/Preguntas';
 import Compra from './Compra/Compra';
+import Blog from './Blog/Blog';
 import './App.css';
 
 export default function App() {
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="/productos" element={<Productos />} />
             <Route path="/preguntas" element={<Preguntas />} />
             <Route path="/compra" element={<Compra />} />
+            <Route path="/blog" element={<Blog />} />
           </Routes> 
           </main>
         <Footer />

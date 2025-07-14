@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../credentials";
+import { db } from "../../credentials.js";
 import {
   collection,
   getDocs,
@@ -71,9 +71,7 @@ const Compra = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (!currentUser) {
-        navigate("/login");
-      } else {
+      if (currentUser) {
         const userData = {
           uid: currentUser.uid,
           email: currentUser.email || 'No proporcionado',
@@ -86,7 +84,7 @@ const Compra = () => {
       setIsLoading(false);
     });
     return () => unsubscribe();
-  }, [navigate]);
+  }, []);
 
   if (isLoading) return (
     <div className={styles.loadingContainer}>
@@ -138,15 +136,15 @@ const Compra = () => {
 
   const generarMensajeWhatsApp = () => {
     let mensaje = "Hola, quiero confirmar mi compra en la óptica:\n\n";
-    mensaje += `Información del paciente:\nNombre: ${patientName}\nEdad: ${patientAge || 'No especificada'}\nEmail: ${user.email}\n\n`;
+    mensaje += `Información del paciente:\nNombre: ${patientName}\nEdad: ${patientAge || 'No especificada'}\nEmail: ${user?.email || 'No proporcionado'}\n\n`;
     mensaje += "Productos seleccionados:\n";
     cart.forEach((item) => {
       mensaje += `${item.quantity} x ${item.name} ($${item.price.toFixed(2)}) = $${(item.quantity * item.price).toFixed(2)}\n`;
       if (item.details) mensaje += `Detalles: ${item.details}\n`;
     });
-    mensaje += `\nInformación de la cita:\nSucursal: ${selectedBranch.name}\nDirección: ${selectedBranch.address}\n`;
-    mensaje += `Fecha: ${appointmentDate}\nHora: ${appointmentTime}\n`;
-    mensaje += `\nResumen de pago:\nTotal: $${calculateTotal().toFixed(2)}\nMétodo de pago: ${paymentMethod}\n`;
+    mensaje += `\nInformación de la cita:\nSucursal: ${selectedBranch?.name || 'No seleccionada'}\nDirección: ${selectedBranch?.address || 'No seleccionada'}\n`;
+    mensaje += `Fecha: ${appointmentDate || 'No seleccionada'}\nHora: ${appointmentTime || 'No seleccionada'}\n`;
+    mensaje += `\nResumen de pago:\nTotal: $${calculateTotal().toFixed(2)}\nMétodo de pago: ${paymentMethod || 'No seleccionado'}\n`;
     mensaje += `Receta médica requerida: ${prescriptionRequired ? 'Sí' : 'No'}\n`;
     return mensaje;
   };
@@ -181,7 +179,7 @@ const Compra = () => {
       await addDoc(collection(db, 'ordenes'), {
         paciente: patientName,
         edad: patientAge,
-        userEmail: user.email,
+        userEmail: user?.email || 'No proporcionado',
         productos: cart.map(item => ({
           name: item.name,
           price: item.price,
@@ -243,7 +241,7 @@ const Compra = () => {
                     </span>
                     <span className={styles.itemPrice}>${(item.quantity * item.price).toFixed(2)}</span>
                   </div>
-                  {item.details && <div className={styles.itemDetails}>Especificaciones: {item.details}</div>}
+                  {item.details && <div className={styles.itemDetails}>Especificaciones: ${item.details}</div>}
                   <button 
                     className={styles.deleteButton} 
                     onClick={() => deleteFromCart(item.id)}
