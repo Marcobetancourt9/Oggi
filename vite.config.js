@@ -1,16 +1,15 @@
-// vite.config.js
 import { defineConfig } from 'vite';
-import { VitePWA } from 'vite-plugin-pwa';
+import react from '@vitejs/plugin-react';
+import { VitePWA } from 'vite-plugin-pwa'; // Asegúrate de importarlo correctamente
 
 export default defineConfig({
   plugins: [
+    react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.ico', 'apple-touch-icon.png'],
       manifest: {
         name: 'Óptica Oggi',
         short_name: 'ÓpticaOggi',
-        description: 'Tienda de lentes ópticos',
         theme_color: '#4a6cf7',
         icons: [
           {
@@ -24,11 +23,7 @@ export default defineConfig({
             type: 'image/png'
           }
         ]
-      },
-      workbox: {
-        clientsClaim: true,
-        skipWaiting: true
       }
     })
   ]
-})
+});

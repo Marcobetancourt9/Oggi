@@ -299,15 +299,12 @@
   }
 }
 
-/* Footer.css */
-
-/* ... (tus estilos existentes) ... */
-
-/* Estilos para el botón de instalación */
-.install-app-container {
-  margin: 0 15px;
+/* Estilos para la sección PWA */
+.pwa-install-section {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0 15px;
 }
 
 .install-app-btn {
@@ -320,22 +317,38 @@
   cursor: pointer;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(74, 108, 247, 0.25);
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 14px;
 }
 
+.ios-install-btn {
+  background: linear-gradient(135deg, #34a853, #2d9149);
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  font-size: 14px;
+}
+
+/* Efectos hover */
 .install-app-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(74, 108, 247, 0.4);
-  background: linear-gradient(135deg, #3a5bd9, #1a2f8a);
 }
 
-.install-icon {
-  font-size: 1rem;
+.ios-install-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(52, 168, 83, 0.4);
 }
 
 /* Responsive */
@@ -343,23 +356,10 @@
   .footer-bottom {
     flex-direction: column;
     align-items: center;
-    gap: 20px;
   }
   
-  .install-app-container {
+  .pwa-install-section {
     order: 2;
-    margin: 10px 0;
-  }
-  
-  .install-app-btn {
-    padding: 8px 16px;
-    font-size: 0.8rem;
-  }
-}
-
-@media (max-width: 480px) {
-  .install-app-btn {
-    padding: 7px 14px;
-    font-size: 0.75rem;
+    margin: 15px 0;
   }
 }

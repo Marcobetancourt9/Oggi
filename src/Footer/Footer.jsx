@@ -1,18 +1,27 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FaFacebookF, FaInstagram, FaTwitter, FaWhatsapp, FaDownload } from 'react-icons/fa';
 import { HiOutlineMail } from 'react-icons/hi';
 import { BsCreditCard, BsCashCoin, BsBank2 } from 'react-icons/bs';
 import './Footer.css';
 
 const Footer = () => {
-  // Estado para controlar la visibilidad del botón de instalación
-  const [installable, setInstallable] = React.useState(false);
-  const [deferredPrompt, setDeferredPrompt] = React.useState(null);
+  const [installable, setInstallable] = useState(false);
+  const [isIOS, setIsIOS] = useState(false);
+  const [isStandalone, setIsStandalone] = useState(false);
+  const deferredPrompt = useRef(null);
 
-  React.useEffect(() => {
+  // Detectar dispositivo y modo PWA
+  useEffect(() => {
+    setIsIOS(/iPad|iPhone|iPod/.test(navigator.userAgent) || 
+            (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1));
+    setIsStandalone(window.matchMedia('(display-mode: standalone)').matches);
+  }, []);
+
+  // Manejar evento de instalación
+  useEffect(() => {
     const handler = (e) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      deferredPrompt.current = e;
       setInstallable(true);
     };
 
@@ -24,22 +33,21 @@ const Footer = () => {
   }, []);
 
   const handleInstallClick = async () => {
-    if (!deferredPrompt) {
+    if (!deferredPrompt.current) {
       alert("La app ya está instalada o tu navegador no soporta la instalación.");
       return;
     }
 
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
+    deferredPrompt.current.prompt();
+    const { outcome } = await deferredPrompt.current.userChoice;
     
-    if (outcome === 'accepted') {
-      console.log("¡Usuario aceptó la instalación!");
-    } else {
-      console.log("Usuario rechazó la instalación");
-    }
-    
-    setDeferredPrompt(null);
+    console.log(`Usuario ${outcome} la instalación`);
+    deferredPrompt.current = null;
     setInstallable(false);
+  };
+
+  const showIOSInstructions = () => {
+    alert("Para instalar la app:\n1. Toca el ícono de compartir\n2. Selecciona 'Añadir a inicio'");
   };
 
   return (
@@ -114,14 +122,22 @@ const Footer = () => {
             </div>
           </div>
 
-          {installable && (
-            <div className="install-app-container">
+        {/* Botón de instalación PWA */}
+        {!isStandalone && (
+          <div className="pwa-install-section">
+            {installable && (
               <button onClick={handleInstallClick} className="install-app-btn">
-                <FaDownload className="install-icon" />
-                Instalar App
+                <FaDownload /> Instalar App
               </button>
-            </div>
-          )}
+            )}
+            
+            {isIOS && (
+              <button onClick={showIOSInstructions} className="ios-install-btn">
+                <FaDownload /> Añadir a Inicio
+              </button>
+            )}
+          </div>
+        )}
 
           <div className="social-media">
             <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="social-icon">
