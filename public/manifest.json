@@ -1,0 +1,26 @@
+{
+  "short_name": "Óptica Oggi",
+  "name": "Centro Óptico Oggi",
+  "description": "Tienda de lentes y servicios ópticos",
+  "icons": [
+    {
+      "src": "/icons/icon-72x72.png",
+      "type": "image/png",
+      "sizes": "72x72"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "theme_color": "#4a6cf7",
+  "background_color": "#ffffff"
+}
