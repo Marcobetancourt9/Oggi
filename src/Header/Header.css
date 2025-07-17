@@ -140,7 +140,6 @@
   bottom: 0;
   width: 70%;
   max-width: 300px;
-  background-color: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(10px);
   z-index: 1001;
   transform: translateX(100%);
@@ -154,13 +153,15 @@
 }
 
 .mobile-nav-link {
+  display: block;
   color: white;
   text-decoration: none;
-  padding: 15px 0;
+  padding: 20px;
+  margin: 10px 0;
   font-size: 18px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-left: 3px solid #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 }
 
 /* Media queries para responsive */
