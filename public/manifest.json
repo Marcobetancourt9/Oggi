@@ -9,12 +9,12 @@
       "sizes": "72x72"
     },
     {
-      "src": "/icons/icon-192x192.png",
+      "src": "https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//oggi.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "/icons/icon-512x512.png",
+      "src": "https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//oggi.png",
       "type": "image/png",
       "sizes": "512x512"
     }
