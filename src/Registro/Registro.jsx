@@ -15,7 +15,7 @@ function Registro() {
       <div className={styles.registroCard}>
         <div className={styles.logoContainer}>
           <img 
-            src="../public/oggi.png" 
+            src="https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//oggi.png" 
             alt="Óptica Oggi" 
             className={styles.logo}
           />

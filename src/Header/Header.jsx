@@ -30,7 +30,7 @@ const Header = () => {
         <div className="logo-container">
           <Link to="/" className="logo-link">
             <img 
-              src="/oggi.png" 
+              src="https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//oggi.png" 
               alt="Centro Óptico" 
               className="logo"
             />
