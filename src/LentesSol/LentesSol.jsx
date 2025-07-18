@@ -91,7 +91,7 @@ const LentesSol = () => {
           </p>
           <SearchBar 
             value={searchTerm} 
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(value) => setSearchTerm(value)}
             placeholder="Buscar por estilo, material, color..."
           />
         </header>

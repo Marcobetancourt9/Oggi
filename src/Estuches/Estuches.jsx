@@ -1,135 +1,81 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import { db } from '../../credentials';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from './Estuches.module.css';
 import SearchBar from '../SearchBar';
 import ProductCard from '../ProductCard';
 
 const Estuches = () => {
-  // Datos memoizados de los estuches
-  const estuches = useMemo(() => [
-    {
-      name: 'Estuche Premium Cuero',
-      imageSrc: '/images/estuches/cuero.jpg',
-      price: 49.99,
-      description: 'Estuche de cuero genuino con forro interior suave',
-      details: {
-        'Material': 'Cuero genuino',
-        'Color': 'Negro, marrón, azul marino',
-        'Capacidad': '1 par de lentes',
-        'Protección': 'Resistente a golpes',
-        'Características': 'Cierre magnético, forro microfibra'
-      }
-    },
-    {
-      name: 'Estuche Plegable Viaje',
-      imageSrc: '/images/estuches/plegable.jpg',
-      price: 29.99,
-      description: 'Diseño ultra delgado que se expande para mayor protección',
-      details: {
-        'Material': 'Nylon resistente',
-        'Color': 'Negro, gris, azul',
-        'Capacidad': '1-2 pares de lentes',
-        'Protección': 'Antigolpes',
-        'Características': 'Plegable, ligero (80g)'
-      }
-    },
-    {
-      name: 'Estuche Aluminio Elegante',
-      imageSrc: '/images/estuches/aluminio.jpg',
-      price: 59.99,
-      description: 'Carcasa dura de aluminio con bisagra de alta duración',
-      details: {
-        'Material': 'Aluminio aeronáutico',
-        'Color': 'Plateado, dorado, negro mate',
-        'Capacidad': '1 par de lentes',
-        'Protección': 'A prueba de aplastamiento',
-        'Características': 'Forro interior de terciopelo'
-      }
-    },
-    {
-      name: 'Estuche Deportivo Resistente',
-      imageSrc: '/images/estuches/deportivo.jpg',
-      price: 39.99,
-      description: 'Diseño resistente al agua y polvo para actividades al aire libre',
-      details: {
-        'Material': 'Neopreno y plástico',
-        'Color': 'Negro, rojo, azul',
-        'Capacidad': '1 par de lentes',
-        'Protección': 'Resistente al agua',
-        'Características': 'Flotante, clip para cinturón'
-      }
-    },
-    {
-      name: 'Estuche Vintage Acetato',
-      imageSrc: '/images/estuches/vintage.jpg',
-      price: 45.99,
-      description: 'Estilo retro con patrones clásicos y cierre de latón',
-      details: {
-        'Material': 'Acetato de alta calidad',
-        'Color': 'Tortuga, negro, marrón',
-        'Capacidad': '1 par de lentes',
-        'Protección': 'Protección básica',
-        'Características': 'Diseño exclusivo'
-      }
-    },
-    {
-      name: 'Estuche Lujo con Espejo',
-      imageSrc: '/images/estuches/espejo.jpg',
-      price: 54.99,
-      description: 'Estuche de lujo con espejo incorporado y compartimento extra',
-      details: {
-        'Material': 'Cuero sintético premium',
-        'Color': 'Negro, rojo, beige',
-        'Capacidad': '1 par + accesorios',
-        'Protección': 'Protección media',
-        'Características': 'Espejo, bolsillo para paño'
-      }
-    },
-    {
-      name: 'Estuche Minimalista Madera',
-      imageSrc: '/images/estuches/madera.jpg',
-      price: 64.99,
-      description: 'Diseño ecológico en madera natural con imanes ocultos',
-      details: {
-        'Material': 'Madera de bambú',
-        'Color': 'Natural, ébano, nogal',
-        'Capacidad': '1 par de lentes',
-        'Protección': 'Protección ligera',
-        'Características': 'Imanes ocultos, ecológico'
-      }
-    },
-    {
-      name: 'Estuche Porta Lentes Rígido',
-      imageSrc: '/images/estuches/rigido.jpg',
-      price: 34.99,
-      description: 'Carcasa dura con certificación militar de resistencia',
-      details: {
-        'Material': 'Policarbonato',
-        'Color': 'Negro, azul, gris',
-        'Capacidad': '1 par de lentes',
-        'Protección': 'A prueba de golpes',
-        'Características': 'Estanco, flotante'
-      }
-    }
-  ], []);
-
+  const [estuches, setEstuches] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredEstuches, setFilteredEstuches] = useState(estuches);
+  const [filteredEstuches, setFilteredEstuches] = useState([]);
   const [activeFilter, setActiveFilter] = useState('Todos');
 
-  const categories = ['Todos', 'Cuero', 'Plegable', 'Aluminio', 'Deportivo', 'Vintage', 'Lujo', 'Madera', 'Rígido'];
+  // Categorías para filtrado
+  const categories = [
+    'Todos',
+    'Cuero',
+    'Plegable',
+    'Aluminio',
+    'Deportivo',
+    'Vintage',
+    'Lujo',
+    'Madera',
+    'Rígido'
+  ];
 
+  // Obtener estuches de Firestore
+  useEffect(() => {
+    const fetchEstuches = async () => {
+      try {
+        // Consulta para obtener solo productos de tipo "Estuches"
+        const q = query(
+          collection(db, "products"), 
+          where("type", "==", "Estuches")
+        );
+        
+        const querySnapshot = await getDocs(q);
+        const estuchesData = [];
+        
+        querySnapshot.forEach((doc) => {
+          estuchesData.push({ 
+            id: doc.id,
+            name: doc.data().name,
+            imageSrc: doc.data().imageSrc,
+            price: doc.data().price,
+            description: doc.data().description,
+            details: doc.data().details || {},
+            category: doc.data().category || ''
+          });
+        });
+        
+        setEstuches(estuchesData);
+        setFilteredEstuches(estuchesData);
+      } catch (error) {
+        console.error("Error fetching cases: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchEstuches();
+  }, []);
+
+  // Filtrar resultados
   useEffect(() => {
     const results = estuches.filter(estuche => {
       const matchesSearch = searchTerm === '' || 
         estuche.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
         estuche.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        Object.entries(estuche.details).some(
+        (estuche.details && Object.entries(estuche.details).some(
           ([key, value]) => 
             key.toLowerCase().includes(searchTerm.toLowerCase()) || 
-            String(value).toLowerCase().includes(searchTerm.toLowerCase()));
+            String(value).toLowerCase().includes(searchTerm.toLowerCase())));
       
       const matchesCategory = activeFilter === 'Todos' || 
-        estuche.details.Material.includes(activeFilter) ||
+        (estuche.category && estuche.category.toLowerCase().includes(activeFilter.toLowerCase())) ||
+        (estuche.details && estuche.details.Material && estuche.details.Material.toLowerCase().includes(activeFilter.toLowerCase())) ||
         (activeFilter === 'Plegable' && estuche.name.toLowerCase().includes('plegable')) ||
         (activeFilter === 'Deportivo' && estuche.name.toLowerCase().includes('deportivo')) ||
         (activeFilter === 'Vintage' && estuche.name.toLowerCase().includes('vintage')) ||
@@ -142,6 +88,14 @@ const Estuches = () => {
     setFilteredEstuches(results);
   }, [searchTerm, activeFilter, estuches]);
 
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <p>Cargando estuches...</p>
+      </div>
+    );
+  }
+
   return (
     <main className={styles.estuchesContainer}>
       <div className={styles.contentWrapper}>
@@ -152,12 +106,12 @@ const Estuches = () => {
           </p>
           <SearchBar 
             value={searchTerm} 
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(value) => setSearchTerm(value)}
             placeholder="Buscar por material, color, características..."
           />
         </header>
 
-        {/* Menú de categorías */}
+        {/* Menú de categorías - Se mantienen los estilos CSS originales */}
         <div className={styles.menuCategories}>
           {categories.map((category) => (
             <button
@@ -172,13 +126,16 @@ const Estuches = () => {
 
         {filteredEstuches.length === 0 ? (
           <p className={styles.noResults}>
-            No se encontraron estuches que coincidan con tu búsqueda
+            {searchTerm || activeFilter !== 'Todos' 
+              ? 'No se encontraron estuches que coincidan con tu búsqueda' 
+              : 'No hay estuches disponibles'}
           </p>
         ) : (
           <div className={styles.estuchesGrid}>
-            {filteredEstuches.map((estuche, index) => (
+            {filteredEstuches.map((estuche) => (
               <ProductCard
-                key={`estuche-${index}`}
+                key={estuche.id}
+                id={estuche.id}
                 imageSrc={estuche.imageSrc}
                 title={estuche.name}
                 price={estuche.price}

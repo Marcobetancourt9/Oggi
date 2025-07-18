@@ -11,13 +11,15 @@ const ProductForm = () => {
         price: '',
         description: '',
         type: '',
-        category: '', // Nuevo campo para categoría específica
+        category: '',
         details: {
             'Estilo': '',
             'Material': '',
             'Protección UV': '',
             'Colores disponibles': '',
-            'Forma': ''
+            'Forma': '',
+            'Edad recomendada': '',
+            'Características': ''
         }
     });
     
@@ -29,17 +31,54 @@ const ProductForm = () => {
         'Estuches'
     ];
 
-    // Categorías específicas para Lentes de sol
-    const sunglassesCategories = [
-        'Aviador',
-        'Wayfarer',
-        'Deportivo',
-        'Oversized',
-        'Polarizados',
-        'Espejados',
-        'Plegables',
-        'Cat Eye'
-    ];
+    // Categorías específicas para cada tipo de producto
+    const productCategories = {
+        'Lentes de sol': [
+            'Aviador',
+            'Wayfarer',
+            'Deportivo',
+            'Oversized',
+            'Polarizados',
+            'Espejados',
+            'Plegables',
+            'Cat Eye'
+        ],
+        'Lentes para niños': [
+            'Bebés',
+            'Niñas',
+            'Niños',
+            'Deportivos',
+            'Estudio',
+            'Protección',
+            'Natación'
+        ],
+        'Lentes de contacto': [
+            'Diarios',
+            'Quincenales',
+            'Mensuales',
+            'Tóricos',
+            'Multifocales',
+            'Cosméticos'
+        ],
+        'Monturas': [
+            'Metálicas',
+            'Acetato',
+            'Mixtas',
+            'Sin marco',
+            'Flexibles',
+            'Diseñador'
+        ],
+        'Estuches': [
+            'Cuero',
+            'Plegable',
+            'Aluminio',
+            'Deportivo',
+            'Vintage',
+            'Lujo',
+            'Madera',
+            'Rígido'
+        ]
+    };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
@@ -74,27 +113,34 @@ const ProductForm = () => {
             setIsSubmitting(true);
             setUploadProgress(0);
             
-            if (!file.type.match('image.*')) {
-                throw new Error('Solo se permiten imágenes (JPEG, PNG, GIF)');
+            const validImageTypes = ['image/jpeg', 'image/png', 'image/webp'];
+            if (!validImageTypes.includes(file.type)) {
+                throw new Error('Formatos soportados: JPEG, PNG o WEBP');
             }
             
             if (file.size > 5 * 1024 * 1024) {
-                throw new Error('El tamaño máximo es 5MB');
+                throw new Error('El tamaño máximo permitido es 5MB');
             }
 
+            // Simular progreso de carga
+            const interval = setInterval(() => {
+                setUploadProgress(prev => Math.min(prev + 10, 90));
+            }, 200);
+
             const imageUrl = await uploadImage(file);
+            clearInterval(interval);
             
-            if (!imageUrl) {
-                throw new Error('No se recibió URL de la imagen');
+            if (!imageUrl?.startsWith('http')) {
+                throw new Error('No se pudo obtener una URL válida para la imagen');
             }
 
             setProduct(prev => ({ ...prev, imageSrc: imageUrl }));
             setUploadProgress(100);
             
         } catch (error) {
-            console.error('Error en subida de imagen:', error);
+            console.error('Error al subir imagen:', error);
             setUploadProgress(0);
-            alert(error.message);
+            alert(`Error: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -103,14 +149,21 @@ const ProductForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
+        // Validaciones básicas
         if (!product.imageSrc) {
-            alert('Por favor sube una imagen del producto');
+            alert('Debes subir una imagen del producto');
             return;
         }
 
-        // Validación especial para Lentes de sol
-        if (product.type === 'Lentes de sol' && !product.category) {
-            alert('Por favor selecciona una categoría para los lentes de sol');
+        if (isNaN(product.price) || parseFloat(product.price) <= 0) {
+            alert('Ingresa un precio válido mayor a cero');
+            return;
+        }
+
+        // Validación de categoría para productos que lo requieren
+        const requiresCategory = ['Lentes de sol', 'Lentes para niños', 'Lentes de contacto', 'Monturas', 'Estuches'];
+        if (requiresCategory.includes(product.type) && !product.category) {
+            alert(`Por favor selecciona una categoría para ${product.type}`);
             return;
         }
 
@@ -119,20 +172,36 @@ const ProductForm = () => {
         try {
             // Estructura base del producto
             const productData = {
-                name: product.name,
+                name: product.name.trim(),
                 imageSrc: product.imageSrc,
                 price: parseFloat(product.price),
-                description: product.description,
+                description: product.description.trim(),
                 type: product.type,
                 details: product.details,
                 createdAt: new Date(),
-                updatedAt: new Date()
+                updatedAt: new Date(),
+                active: true, // Por defecto activo
+                stock: 0 // Inicialmente sin stock
             };
 
-            // Campos adicionales para Lentes de sol
-            if (product.type === 'Lentes de sol') {
+            // Campos específicos según tipo de producto
+            if (product.category) {
                 productData.category = product.category;
-                productData.details.Estilo = product.category; // Asignamos la categoría como Estilo
+                
+                // Para lentes de sol, la categoría también va en detalles.Estilo
+                if (product.type === 'Lentes de sol') {
+                    productData.details.Estilo = product.category;
+                }
+                
+                // Para lentes infantiles, ajustamos detalles según categoría
+                if (product.type === 'Lentes para niños') {
+                    if (product.category === 'Bebés') {
+                        productData.details['Edad recomendada'] = '0-3 años';
+                    }
+                    if (product.category === 'Natación') {
+                        productData.details.Características = 'Resistente al agua';
+                    }
+                }
             }
 
             // Guardar en Firestore
@@ -141,7 +210,7 @@ const ProductForm = () => {
             console.log("Producto guardado con ID: ", docRef.id);
             setSuccessMessage('¡Producto guardado exitosamente!');
             
-            // Resetear formulario
+            // Resetear formulario después de 3 segundos
             setTimeout(() => {
                 setSuccessMessage('');
                 setProduct({
@@ -156,19 +225,24 @@ const ProductForm = () => {
                         'Material': '',
                         'Protección UV': '',
                         'Colores disponibles': '',
-                        'Forma': ''
+                        'Forma': '',
+                        'Edad recomendada': '',
+                        'Características': ''
                     }
                 });
                 setUploadProgress(0);
             }, 3000);
             
         } catch (error) {
-            console.error('Error saving product:', error);
-            alert('Error al guardar el producto: ' + error.message);
+            console.error('Error al guardar producto:', error);
+            alert(`Error al guardar: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
     };
+
+    // Determinar si mostrar el selector de categoría
+    const shouldShowCategory = product.type && productCategories[product.type];
 
     return (
         <div className={styles.formContainer}>
@@ -193,6 +267,7 @@ const ProductForm = () => {
                         onChange={handleInputChange}
                         className={styles.input}
                         required
+                        maxLength="100"
                     />
                 </div>
 
@@ -217,11 +292,11 @@ const ProductForm = () => {
                     </select>
                 </div>
 
-                {/* Selector de categoría (solo para Lentes de sol) */}
-                {product.type === 'Lentes de sol' && (
+                {/* Selector de categoría (solo para tipos que lo requieren) */}
+                {shouldShowCategory && (
                     <div className={styles.formGroup}>
                         <label className={styles.label} htmlFor="category">
-                            Categoría de Lentes de Sol
+                            Categoría de {product.type}
                         </label>
                         <select
                             id="category"
@@ -232,7 +307,7 @@ const ProductForm = () => {
                             required
                         >
                             <option value="">Seleccione una categoría</option>
-                            {sunglassesCategories.map((category) => (
+                            {productCategories[product.type].map((category) => (
                                 <option key={category} value={category}>
                                     {category}
                                 </option>
@@ -241,7 +316,7 @@ const ProductForm = () => {
                     </div>
                 )}
 
-                {/* Resto del formulario (imagen, precio, descripción, detalles) */}
+                {/* Campo para subir imagen */}
                 <div className={styles.formGroup}>
                     <label className={styles.label}>
                         Imagen del Producto
@@ -250,7 +325,7 @@ const ProductForm = () => {
                         <input
                             type="file"
                             ref={fileInputRef}
-                            accept="image/*"
+                            accept="image/jpeg, image/png, image/webp"
                             onChange={handleImageUpload}
                             className={styles.fileInput}
                             required
@@ -273,8 +348,11 @@ const ProductForm = () => {
                                 src={product.imageSrc} 
                                 alt="Vista previa" 
                                 className={styles.previewImage}
+                                onError={(e) => {
+                                    e.target.onerror = null;
+                                    e.target.src = '/images/placeholder-product.jpg';
+                                }}
                             />
-                            <p className={styles.imageUrl}>URL de la imagen: {product.imageSrc}</p>
                         </div>
                     )}
                 </div>
@@ -291,7 +369,7 @@ const ProductForm = () => {
                         onChange={handleInputChange}
                         className={styles.input}
                         step="0.01"
-                        min="0"
+                        min="0.01"
                         required
                     />
                 </div>
@@ -308,6 +386,7 @@ const ProductForm = () => {
                         className={`${styles.input} ${styles.textarea}`}
                         rows="5"
                         required
+                        maxLength="500"
                     />
                 </div>
 
@@ -316,26 +395,29 @@ const ProductForm = () => {
                     
                     <div className={styles.detailsGrid}>
                         {Object.entries(product.details).map(([key, value]) => (
-                            <div key={key} className={styles.detailCard}>
-                                <label className={styles.label} htmlFor={`detail-${key}`}>
-                                    {key}
-                                </label>
-                                <input
-                                    type="text"
-                                    id={`detail-${key}`}
-                                    name={key}
-                                    value={value}
-                                    onChange={handleDetailChange}
-                                    className={styles.input}
-                                />
-                            </div>
+                            product.type === 'Lentes para niños' && key === 'Estilo' ? null : (
+                                <div key={key} className={styles.detailCard}>
+                                    <label className={styles.label} htmlFor={`detail-${key}`}>
+                                        {key}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id={`detail-${key}`}
+                                        name={key}
+                                        value={value}
+                                        onChange={handleDetailChange}
+                                        className={styles.input}
+                                        required={key === 'Material' || key === 'Protección UV'}
+                                    />
+                                </div>
+                            )
                         ))}
                     </div>
                 </div>
 
                 <button
                     type="submit"
-                    disabled={isSubmitting || !product.imageSrc}
+                    disabled={isSubmitting}
                     className={styles.submitButton}
                 >
                     {isSubmitting ? (

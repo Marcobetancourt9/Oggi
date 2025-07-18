@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import styles from './SearchBar.module.css';
 import { FiSearch, FiX } from 'react-icons/fi';
 
-const SearchBar = ({ value = '', onChange }) => {
+const SearchBar = ({ value = '', onChange, placeholder = '' }) => {
   const [isFocused, setIsFocused] = useState(false);
 
   const handleInputChange = (e) => {
+    // Llamamos a onChange con solo el valor, no con el evento completo
     onChange(e.target.value);
   };
 
@@ -30,18 +31,19 @@ const SearchBar = ({ value = '', onChange }) => {
         <input
           type="text"
           className={styles.searchInput}
-          placeholder="Buscar monturas por nombre, material, color o precio..."
+          placeholder={placeholder}
           value={value}
           onChange={handleInputChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
-          aria-label="Buscar monturas ópticas"
+          aria-label="Buscar productos"
         />
         {value && (
           <button 
             className={styles.clearButton}
             onClick={handleClearSearch}
             aria-label="Limpiar búsqueda"
+            type="button"
           >
             <FiX />
           </button>
