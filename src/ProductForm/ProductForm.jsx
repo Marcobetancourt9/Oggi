@@ -13,13 +13,20 @@ const ProductForm = () => {
         type: '',
         category: '',
         details: {
-            'Estilo': '',
+            // Campos generales
             'Material': '',
-            'Protección UV': '',
             'Colores disponibles': '',
+            // Campos específicos para lentes
+            'Estilo': '',
+            'Protección UV': '',
             'Forma': '',
-            'Edad recomendada': '',
-            'Características': ''
+            // Campos específicos para lentes de contacto
+            'Duración': '',
+            'Uso recomendado': '',
+            // Campos específicos para monturas
+            'Tipo de montura': '',
+            'Peso': '',
+            'Ajuste': ''
         }
     });
     
@@ -80,6 +87,15 @@ const ProductForm = () => {
         ]
     };
 
+    // Campos específicos por tipo de producto
+    const productSpecificFields = {
+        'Lentes de sol': ['Estilo', 'Protección UV', 'Forma'],
+        'Lentes para niños': ['Edad recomendada', 'Características especiales'],
+        'Lentes de contacto': ['Duración', 'Uso recomendado', 'Tipo de lente'],
+        'Monturas': ['Tipo de montura', 'Peso', 'Ajuste'],
+        'Estuches': ['Capacidad', 'Protección', 'Cierre']
+    };
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
@@ -122,7 +138,6 @@ const ProductForm = () => {
                 throw new Error('El tamaño máximo permitido es 5MB');
             }
 
-            // Simular progreso de carga
             const interval = setInterval(() => {
                 setUploadProgress(prev => Math.min(prev + 10, 90));
             }, 200);
@@ -180,27 +195,32 @@ const ProductForm = () => {
                 details: product.details,
                 createdAt: new Date(),
                 updatedAt: new Date(),
-                active: true, // Por defecto activo
-                stock: 0 // Inicialmente sin stock
+                active: true,
+                stock: 0
             };
 
             // Campos específicos según tipo de producto
             if (product.category) {
                 productData.category = product.category;
                 
-                // Para lentes de sol, la categoría también va en detalles.Estilo
-                if (product.type === 'Lentes de sol') {
-                    productData.details.Estilo = product.category;
-                }
-                
-                // Para lentes infantiles, ajustamos detalles según categoría
-                if (product.type === 'Lentes para niños') {
-                    if (product.category === 'Bebés') {
-                        productData.details['Edad recomendada'] = '0-3 años';
-                    }
-                    if (product.category === 'Natación') {
-                        productData.details.Características = 'Resistente al agua';
-                    }
+                // Asignaciones específicas por tipo
+                switch(product.type) {
+                    case 'Lentes de sol':
+                        productData.details.Estilo = product.category;
+                        break;
+                    case 'Lentes para niños':
+                        if (product.category === 'Bebés') {
+                            productData.details['Edad recomendada'] = '0-3 años';
+                        }
+                        if (product.category === 'Natación') {
+                            productData.details['Características especiales'] = 'Resistente al agua';
+                        }
+                        break;
+                    case 'Monturas':
+                        productData.details['Tipo de montura'] = product.category;
+                        break;
+                    default:
+                        break;
                 }
             }
 
@@ -210,7 +230,7 @@ const ProductForm = () => {
             console.log("Producto guardado con ID: ", docRef.id);
             setSuccessMessage('¡Producto guardado exitosamente!');
             
-            // Resetear formulario después de 3 segundos
+            // Resetear formulario
             setTimeout(() => {
                 setSuccessMessage('');
                 setProduct({
@@ -221,13 +241,22 @@ const ProductForm = () => {
                     type: '',
                     category: '',
                     details: {
-                        'Estilo': '',
                         'Material': '',
-                        'Protección UV': '',
                         'Colores disponibles': '',
+                        'Estilo': '',
+                        'Protección UV': '',
                         'Forma': '',
                         'Edad recomendada': '',
-                        'Características': ''
+                        'Características especiales': '',
+                        'Duración': '',
+                        'Uso recomendado': '',
+                        'Tipo de lente': '',
+                        'Tipo de montura': '',
+                        'Peso': '',
+                        'Ajuste': '',
+                        'Capacidad': '',
+                        'Protección': '',
+                        'Cierre': ''
                     }
                 });
                 setUploadProgress(0);
@@ -241,8 +270,12 @@ const ProductForm = () => {
         }
     };
 
-    // Determinar si mostrar el selector de categoría
-    const shouldShowCategory = product.type && productCategories[product.type];
+    // Determinar campos a mostrar según el tipo de producto
+    const getVisibleDetailFields = () => {
+        const commonFields = ['Material', 'Colores disponibles'];
+        const specificFields = product.type ? productSpecificFields[product.type] || [] : [];
+        return [...commonFields, ...specificFields];
+    };
 
     return (
         <div className={styles.formContainer}>
@@ -257,7 +290,7 @@ const ProductForm = () => {
             <form onSubmit={handleSubmit}>
                 <div className={styles.formGroup}>
                     <label className={styles.label} htmlFor="name">
-                        Nombre del Producto
+                        Nombre del Producto*
                     </label>
                     <input
                         type="text"
@@ -273,7 +306,7 @@ const ProductForm = () => {
 
                 <div className={styles.formGroup}>
                     <label className={styles.label} htmlFor="type">
-                        Tipo de Producto
+                        Tipo de Producto*
                     </label>
                     <select
                         id="type"
@@ -293,10 +326,10 @@ const ProductForm = () => {
                 </div>
 
                 {/* Selector de categoría (solo para tipos que lo requieren) */}
-                {shouldShowCategory && (
+                {product.type && productCategories[product.type] && (
                     <div className={styles.formGroup}>
                         <label className={styles.label} htmlFor="category">
-                            Categoría de {product.type}
+                            Categoría de {product.type}*
                         </label>
                         <select
                             id="category"
@@ -304,7 +337,7 @@ const ProductForm = () => {
                             value={product.category}
                             onChange={handleInputChange}
                             className={`${styles.input} ${styles.select}`}
-                            required
+                            required={productCategories.hasOwnProperty(product.type)}
                         >
                             <option value="">Seleccione una categoría</option>
                             {productCategories[product.type].map((category) => (
@@ -319,7 +352,7 @@ const ProductForm = () => {
                 {/* Campo para subir imagen */}
                 <div className={styles.formGroup}>
                     <label className={styles.label}>
-                        Imagen del Producto
+                        Imagen del Producto*
                     </label>
                     <div className={styles.fileInputWrapper} onClick={triggerFileInput}>
                         <input
@@ -331,7 +364,7 @@ const ProductForm = () => {
                             required
                         />
                         <div className={styles.fileInputLabel}>
-                            {product.imageSrc ? 'Cambiar imagen' : 'Seleccionar archivo'}
+                            {product.imageSrc ? 'Cambiar imagen' : 'Seleccionar archivo (JPEG, PNG, WEBP)'}
                         </div>
                     </div>
                     {uploadProgress > 0 && uploadProgress < 100 && (
@@ -359,7 +392,7 @@ const ProductForm = () => {
 
                 <div className={styles.formGroup}>
                     <label className={styles.label} htmlFor="price">
-                        Precio
+                        Precio (MXN)*
                     </label>
                     <input
                         type="number"
@@ -376,7 +409,7 @@ const ProductForm = () => {
 
                 <div className={styles.formGroup}>
                     <label className={styles.label} htmlFor="description">
-                        Descripción
+                        Descripción*
                     </label>
                     <textarea
                         id="description"
@@ -394,23 +427,21 @@ const ProductForm = () => {
                     <h2 className={styles.detailsTitle}>Detalles del Producto</h2>
                     
                     <div className={styles.detailsGrid}>
-                        {Object.entries(product.details).map(([key, value]) => (
-                            product.type === 'Lentes para niños' && key === 'Estilo' ? null : (
-                                <div key={key} className={styles.detailCard}>
-                                    <label className={styles.label} htmlFor={`detail-${key}`}>
-                                        {key}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id={`detail-${key}`}
-                                        name={key}
-                                        value={value}
-                                        onChange={handleDetailChange}
-                                        className={styles.input}
-                                        required={key === 'Material' || key === 'Protección UV'}
-                                    />
-                                </div>
-                            )
+                        {getVisibleDetailFields().map((field) => (
+                            <div key={field} className={styles.detailCard}>
+                                <label className={styles.label} htmlFor={`detail-${field}`}>
+                                    {field}
+                                </label>
+                                <input
+                                    type="text"
+                                    id={`detail-${field}`}
+                                    name={field}
+                                    value={product.details[field] || ''}
+                                    onChange={handleDetailChange}
+                                    className={styles.input}
+                                    required={['Material', 'Colores disponibles'].includes(field)}
+                                />
+                            </div>
                         ))}
                     </div>
                 </div>

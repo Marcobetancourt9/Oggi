@@ -1,82 +1,57 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { db } from '../../credentials';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 import styles from './Monturas.module.css';
 import SearchBar from '../SearchBar';
-import ProductCard from '../ProductCard'; // Asumo que tienes este componente
+import ProductCard from '../ProductCard';
 
 const Monturas = () => {
-  // Datos de las monturas disponibles
-  const monturas = [
-    {
-      name: 'Montura Clásica de Acero',
-      imageSrc: '/images/monturas/clasica-acero.jpg',
-      price: 89.99,
-      description: 'Diseño atemporal en acero inoxidable, ideal para uso diario',
-      colors: ['Plateado', 'Oro', 'Negro'],
-      material: 'Acero inoxidable'
-    },
-    {
-      name: 'Montura Ultra Ligera Titanio',
-      imageSrc: '/images/monturas/titanio-ligera.jpg',
-      price: 149.99,
-      description: 'Titanio de grado óptico, peso mínimo y máxima durabilidad',
-      colors: ['Grafito', 'Azul oscuro'],
-      material: 'Titanio'
-    },
-    {
-      name: 'Montura Deportiva Flexible',
-      imageSrc: '/images/monturas/deportiva-flexible.jpg',
-      price: 75.50,
-      description: 'Material TR90 resistente para actividades físicas',
-      colors: ['Rojo', 'Negro', 'Azul'],
-      material: 'TR90'
-    },
-    {
-      name: 'Montura Elegante de Carey',
-      imageSrc: '/images/monturas/carey-elegante.jpg',
-      price: 120.00,
-      description: 'Patrón clásico de carey con terminaciones metálicas',
-      colors: ['Marrón/Ámbar', 'Negro/Gris'],
-      material: 'Acetato'
-    },
-    {
-      name: 'Montura Minimalista Aluminio',
-      imageSrc: '/images/monturas/minimalista-aluminio.jpg',
-      price: 95.75,
-      description: 'Líneas limpias y diseño sin tornillos visibles',
-      colors: ['Plateado', 'Oro rosa'],
-      material: 'Aluminio'
-    },
-    {
-      name: 'Montura Vintage de Acetato',
-      imageSrc: '/images/monturas/vintage-acetato.jpg',
-      price: 110.00,
-      description: 'Estilo retro con colores vibrantes y formas redondeadas',
-      colors: ['Tortuga', 'Verde esmeralda', 'Burdeos'],
-      material: 'Acetato'
-    },
-    {
-      name: 'Montura Infantil Resistente',
-      imageSrc: '/images/monturas/infantil-resistente.jpg',
-      price: 65.99,
-      description: 'Diseñada para niños, con bisagras de resorte y materiales irrompibles',
-      colors: ['Azul', 'Rosa', 'Verde', 'Morado'],
-      material: 'Policarbonato'
-    },
-    {
-      name: 'Montura Premium de Madera',
-      imageSrc: '/images/monturas/premium-madera.jpg',
-      price: 179.99,
-      description: 'Hecha a mano con madera sostenible y detalles metálicos',
-      colors: ['Nogal', 'Cerezo', 'Ébano'],
-      material: 'Madera/Acero'
-    }
-  ];
-
+  const [monturas, setMonturas] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [filteredMonturas, setFilteredMonturas] = useState(monturas);
+  const [filteredMonturas, setFilteredMonturas] = useState([]);
 
+  // Obtener monturas de Firestore
+  useEffect(() => {
+    const fetchMonturas = async () => {
+      try {
+        // Consulta para obtener solo productos de tipo "Monturas"
+        const q = query(
+          collection(db, "products"), 
+          where("type", "==", "Monturas")
+        );
+        
+        const querySnapshot = await getDocs(q);
+        const monturasData = [];
+        
+        querySnapshot.forEach((doc) => {
+          const data = doc.data();
+          monturasData.push({ 
+            id: doc.id,
+            name: data.name,
+            imageSrc: data.imageSrc,
+            price: data.price,
+            description: data.description,
+            material: data.details?.Material || '',
+            colors: data.details?.Colores ? data.details.Colores.split(', ') : []
+          });
+        });
+        
+        setMonturas(monturasData);
+        setFilteredMonturas(monturasData);
+      } catch (error) {
+        console.error("Error fetching frames: ", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchMonturas();
+  }, []);
+
+  // Filtrar resultados
   useEffect(() => {
     if (searchTerm.trim() === '') {
       setFilteredMonturas(monturas);
@@ -92,7 +67,16 @@ const Monturas = () => {
       );
       setFilteredMonturas(filtered);
     }
-  }, [searchTerm]);
+  }, [searchTerm, monturas]);
+
+  if (loading) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Cargando monturas...</p>
+      </div>
+    );
+  }
 
   return (
     <main className={styles.monturasContainer}>
@@ -110,12 +94,27 @@ const Monturas = () => {
         </header>
 
         {filteredMonturas.length === 0 ? (
-          <p className={styles.noResults}>No se encontraron monturas que coincidan con tu búsqueda</p>
+          <div className={styles.noResultsContainer}>
+            <p className={styles.noResults}>
+              {searchTerm 
+                ? 'No se encontraron monturas que coincidan con tu búsqueda' 
+                : 'No hay monturas disponibles'}
+            </p>
+            {searchTerm && (
+              <button 
+                className={styles.resetButton}
+                onClick={() => setSearchTerm('')}
+              >
+                Limpiar búsqueda
+              </button>
+            )}
+          </div>
         ) : (
           <div className={styles.monturasGrid}>
-            {filteredMonturas.map((montura, index) => (
+            {filteredMonturas.map((montura) => (
               <ProductCard
-                key={index}
+                key={montura.id}
+                id={montura.id}
                 imageSrc={montura.imageSrc}
                 title={montura.name}
                 price={montura.price}

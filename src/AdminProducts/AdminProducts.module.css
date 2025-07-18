@@ -1,0 +1,496 @@
+.adminContainer {
+  padding: 40px;
+  max-width: 1400px; /* Aumentado de 1200px */
+  margin: 0 auto;
+  min-height: 100vh;
+}
+
+.adminTitle {
+  font-size: 2.5rem;
+  color: #a3a3a3;
+  margin-bottom: 10px;
+  text-align: center;
+  font-weight: 700;
+}
+
+.adminSubtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+/* Estilos para la barra de búsqueda */
+.searchContainer {
+  margin-bottom: 30px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 8px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e2e8f0;
+}
+
+.searchIcon {
+  color: #94a3b8;
+  margin-right: 10px;
+  font-size: 1.2rem;
+}
+
+.searchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  color: #334155;
+  padding: 8px 0;
+}
+
+.searchInput::placeholder {
+  color: #94a3b8;
+}
+
+.clearSearchButton {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s;
+}
+
+.clearSearchButton:hover {
+  color: #64748b;
+}
+
+/* Estilos para la tabla de productos */
+.productsTableContainer {
+  background-color: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f1f5f9;
+  margin-top: 20px;
+}
+
+.productsTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.productsTable th,
+.productsTable td {
+  padding: 16px 20px;
+  text-align: left;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.productsTable th {
+  background-color: #f8fafc;
+  color: #334155;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  letter-spacing: 0.5px;
+  position: sticky;
+  top: 0;
+}
+
+/* Configuración de anchos de columnas */
+.productsTable th:nth-child(1),
+.productsTable td:nth-child(1) {
+  width: 140px; /* Columna de imagen más ancha */
+}
+
+.productsTable th:nth-child(2),
+.productsTable td:nth-child(2) {
+  width: 25%;
+}
+
+.productsTable th:nth-child(3),
+.productsTable td:nth-child(3) {
+  width: 15%;
+}
+
+.productsTable th:nth-child(4),
+.productsTable td:nth-child(4) {
+  width: 20%;
+}
+
+.productsTable th:nth-child(5),
+.productsTable td:nth-child(5) {
+  width: 15%;
+  text-align: right;
+  padding-right: 30px;
+}
+
+.productsTable th:nth-child(6),
+.productsTable td:nth-child(6) {
+  width: 15%;
+  text-align: center;
+}
+
+.productsTable tr:hover {
+  background-color: #f8fafc;
+}
+
+/* Estilos para las imágenes */
+.productImage {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+  display: block;
+  margin: 0 auto;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s;
+}
+
+.productImage:hover {
+  transform: scale(1.05);
+}
+
+/* Estilos para el texto */
+.productsTable td {
+  font-size: 0.95rem;
+  color: #334155;
+  line-height: 1.5;
+}
+
+.productsTable td:nth-child(5) {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+/* Estilos para los botones de acción */
+.actionsContainer {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.editButton,
+.deleteButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  font-size: 1.1rem;
+}
+
+.editButton {
+  color: #3b82f6;
+  border: 1px solid #3b82f6;
+}
+
+.editButton:hover {
+  background-color: #eff6ff;
+  transform: translateY(-1px);
+}
+
+.deleteButton {
+  color: #ef4444;
+  border: 1px solid #ef4444;
+}
+
+.deleteButton:hover {
+  background-color: #fef2f2;
+  transform: translateY(-1px);
+}
+
+/* Estilos para cuando no hay productos */
+.noProducts {
+  padding: 60px 40px;
+  text-align: center;
+  color: #64748b;
+  font-size: 1.1rem;
+  background-color: #f8fafc;
+  border-radius: 0 0 12px 12px;
+}
+
+/* Estilos para el modal */
+.modal {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: white;
+  padding: 30px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  outline: none;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.modal h2 {
+  margin-top: 0;
+  color: #1e293b;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
+}
+
+.modal p {
+  margin-bottom: 10px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+.warningText {
+  color: #ef4444;
+  font-weight: 500;
+  margin: 20px 0;
+  font-size: 1.1rem;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.cancelButton,
+.confirmDeleteButton {
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s;
+  font-size: 0.95rem;
+}
+
+.cancelButton {
+  background-color: #f1f5f9;
+  color: #334155;
+}
+
+.cancelButton:hover {
+  background-color: #e2e8f0;
+}
+
+.confirmDeleteButton {
+  background-color: #ef4444;
+  color: white;
+}
+
+.confirmDeleteButton:hover {
+  background-color: #dc2626;
+}
+
+/* Loading spinner */
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 300px;
+  width: 100%;
+  background-color: #f8fafc;
+  border-radius: 12px;
+}
+
+.loadingSpinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid #e2e8f0;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .adminContainer {
+    padding: 30px;
+  }
+  
+  .productImage {
+    width: 80px;
+    height: 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .adminContainer {
+    padding: 20px;
+    max-width: 100%;
+  }
+  
+  .adminTitle {
+    font-size: 2rem;
+  }
+  
+  .productsTable th,
+  .productsTable td {
+    padding: 12px 15px;
+  }
+  
+  .productImage {
+    width: 70px;
+    height: 70px;
+  }
+  
+  .productsTable th:nth-child(n),
+  .productsTable td:nth-child(n) {
+    width: auto;
+  }
+  
+  .productsTable td:nth-child(5) {
+    text-align: left;
+    padding-right: 15px;
+  }
+  
+  .actionsContainer {
+    flex-direction: column;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .adminTitle {
+    font-size: 1.8rem;
+  }
+  
+  .adminSubtitle {
+    font-size: 1rem;
+    margin-bottom: 30px;
+  }
+  
+  .searchContainer {
+    margin-bottom: 20px;
+  }
+  
+  .searchInput {
+    font-size: 0.9rem;
+  }
+  
+  .productsTable th {
+    display: none;
+  }
+  
+  .productsTable td {
+    display: block;
+    padding: 12px 15px;
+    position: relative;
+    padding-left: 45%;
+  }
+  
+  .productsTable td:before {
+    content: attr(data-label);
+    font-weight: 600;
+    position: absolute;
+    left: 15px;
+    width: 40%;
+    color: #64748b;
+  }
+  
+  .productImage {
+    width: 60px;
+    height: 60px;
+    margin: 0;
+  }
+  
+  .noProducts {
+    padding: 40px 20px;
+  }
+  
+  .modal {
+    padding: 20px;
+  }
+  
+  .modalButtons {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .cancelButton,
+  .confirmDeleteButton {
+    width: 100%;
+  }
+}
+
+/* Estilos para edición */
+.editInput {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  background-color: #f8fafc;
+}
+
+.saveButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #10b981;
+  border: 1px solid #10b981;
+}
+
+.saveButton:hover {
+  background-color: #ecfdf5;
+  transform: translateY(-1px);
+}
+
+.cancelEditButton {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  color: #64748b;
+  border: 1px solid #64748b;
+}
+
+.cancelEditButton:hover {
+  background-color: #f1f5f9;
+  transform: translateY(-1px);
+}

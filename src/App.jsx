@@ -22,6 +22,7 @@ import LoginForm from './Login/Login';
 import Registro from './Registro/Registro';
 import RecuperarContrasena from './RecuperarContrasena/RecuperarContrasena';
 import ProductForm from './ProductForm/ProductForm';
+import AdminProducts from './AdminProducts/AdminProducts';
 
 
 export default function App() {
@@ -64,6 +65,7 @@ export default function App() {
             <Route path="/registro" element={<Registro />} />
             <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
             <Route path="/product-form" element={<ProductForm />} />            
+            <Route path="/borrar" element={<AdminProducts />} />            
           </Routes> 
           </main>
         <Footer />
