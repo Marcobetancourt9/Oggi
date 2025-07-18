@@ -10,27 +10,12 @@ const urlsToCache = [
 self.addEventListener('install', event => {
   event.waitUntil(
     caches.open(CACHE_NAME)
-      .then(cache => cache.addAll(urlsToCache))
-      .catch(error => console.error('Error al cachear recursos:', error))
-  );
+      .then(cache => cache.addAll(urlsToCache)))
 });
 
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request)
-      .then(response => {
-        // Si está en caché, devolverlo
-        if (response) return response;
-        
-        // Si no, hacer fetch y manejar errores
-        return fetch(event.request)
-          .catch(() => {
-            // Puedes devolver una página offline aquí si lo tienes
-            return new Response('Estás offline', {
-              status: 503,
-              statusText: 'Service Unavailable'
-            });
-          });
-      })
+      .then(response => response || fetch(event.request))
   );
 });
