@@ -494,3 +494,65 @@
   background-color: #f1f5f9;
   transform: translateY(-1px);
 }
+
+
+/* Estilos para el control de acceso */
+.accessDeniedContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  text-align: center;
+  padding: 20px;
+  background-color: #f8fafc;
+}
+
+.accessDeniedContainer h2 {
+  color: #ef4444;
+  margin-bottom: 20px;
+}
+
+.accessDeniedContainer p {
+  color: #64748b;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+/* Barra de usuario */
+.userBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 15px 20px;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+}
+
+.userInfo {
+  font-size: 0.95rem;
+  color: #334155;
+}
+
+.userInfo span {
+  font-weight: 500;
+}
+
+.logoutButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #ef4444;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.logoutButton:hover {
+  background-color: #dc2626;
+}

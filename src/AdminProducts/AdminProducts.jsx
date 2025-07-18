@@ -1,13 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { db } from '../../credentials';
+import { db, auth } from '../../credentials';
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import styles from './AdminProducts.module.css';
-import { FiTrash2, FiEdit, FiSearch, FiX, FiSave, FiArrowLeft } from 'react-icons/fi';
+import { FiTrash2, FiEdit, FiSearch, FiX, FiSave, FiArrowLeft, FiLogOut } from 'react-icons/fi';
 import Modal from 'react-modal';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 Modal.setAppElement('#root');
+
+// Lista de correos autorizados (completa los espacios vacíos)
+const AUTHORIZED_EMAILS = [
+  'marco.betancourt@correo.unimet.edu.ve',
+  '', // Completa con el segundo correo
+  ''  // Completa con el tercer correo
+];
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -25,29 +33,47 @@ const AdminProducts = () => {
     description: '',
     imageSrc: ''
   });
+  const [user, setUser] = useState(null);
+  const [accessDenied, setAccessDenied] = useState(false);
+
+  // Verificar autenticación y autorización
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      if (currentUser) {
+        if (AUTHORIZED_EMAILS.includes(currentUser.email)) {
+          setUser(currentUser);
+          setAccessDenied(false);
+          fetchProducts();
+        } else {
+          setAccessDenied(true);
+          signOut(auth);
+        }
+      } else {
+        setUser(null);
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Obtener productos
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const querySnapshot = await getDocs(collection(db, "products"));
-        const productsData = querySnapshot.docs.map(doc => ({
-          id: doc.id,
-          ...doc.data()
-        }));
-        
-        setProducts(productsData);
-        setFilteredProducts(productsData);
-      } catch (error) {
-        console.error("Error fetching products: ", error);
-        toast.error('Error al cargar los productos');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+  const fetchProducts = async () => {
+    try {
+      const querySnapshot = await getDocs(collection(db, "products"));
+      const productsData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      
+      setProducts(productsData);
+      setFilteredProducts(productsData);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching products: ", error);
+      toast.error('Error al cargar los productos');
+      setLoading(false);
+    }
+  };
 
   // Filtrar productos
   useEffect(() => {
@@ -122,7 +148,6 @@ const AdminProducts = () => {
         imageSrc: editFormData.imageSrc
       });
 
-      // Actualizar lista de productos
       const updatedProducts = products.map(p => 
         p.id === productId ? { ...p, ...editFormData, price: parseFloat(editFormData.price) || 0 } : p
       );
@@ -157,6 +182,36 @@ const AdminProducts = () => {
     }
   };
 
+  // Cerrar sesión
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      toast.success('Sesión cerrada correctamente');
+    } catch (error) {
+      console.error("Error al cerrar sesión: ", error);
+      toast.error('Error al cerrar sesión');
+    }
+  };
+
+  if (accessDenied) {
+    return (
+      <div className={styles.accessDeniedContainer}>
+        <h2>Acceso Denegado</h2>
+        <p>No tienes permiso para acceder a esta página.</p>
+        <p>Por favor, inicia sesión con una cuenta autorizada.</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className={styles.loadingContainer}>
+        <div className={styles.loadingSpinner}></div>
+        <p>Verificando credenciales...</p>
+      </div>
+    );
+  }
+
   if (loading) {
     return (
       <div className={styles.loadingContainer}>
@@ -168,6 +223,16 @@ const AdminProducts = () => {
 
   return (
     <div className={styles.adminContainer}>
+      {/* Barra superior con información de usuario */}
+      <div className={styles.userBar}>
+        <div className={styles.userInfo}>
+          <span>Bienvenido, {user.email}</span>
+        </div>
+        <button onClick={handleLogout} className={styles.logoutButton}>
+          <FiLogOut /> Cerrar sesión
+        </button>
+      </div>
+
       <h1 className={styles.adminTitle}>Administración de Productos</h1>
       <p className={styles.adminSubtitle}>Gestiona todos los productos de tu óptica</p>
 

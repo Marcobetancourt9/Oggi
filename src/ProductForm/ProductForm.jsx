@@ -1,8 +1,17 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { uploadImage } from '../../supabaseCredentials';
-import { db } from '../../credentials';
+import { db, auth } from '../../credentials';
 import { collection, addDoc } from 'firebase/firestore';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { FiLogOut, FiUpload, FiCheckCircle } from 'react-icons/fi';
 import styles from './ProductForm.module.css';
+
+// Lista de correos autorizados
+const AUTHORIZED_EMAILS = [
+  'marco.betancourt@correo.unimet.edu.ve',
+  '', // Completa con el segundo correo
+  ''  // Completa con el tercer correo
+];
 
 const ProductForm = () => {
     const [product, setProduct] = useState({
@@ -13,17 +22,13 @@ const ProductForm = () => {
         type: '',
         category: '',
         details: {
-            // Campos generales
             'Material': '',
             'Colores disponibles': '',
-            // Campos específicos para lentes
             'Estilo': '',
             'Protección UV': '',
             'Forma': '',
-            // Campos específicos para lentes de contacto
             'Duración': '',
             'Uso recomendado': '',
-            // Campos específicos para monturas
             'Tipo de montura': '',
             'Peso': '',
             'Ajuste': ''
@@ -38,56 +43,14 @@ const ProductForm = () => {
         'Estuches'
     ];
 
-    // Categorías específicas para cada tipo de producto
     const productCategories = {
-        'Lentes de sol': [
-            'Aviador',
-            'Wayfarer',
-            'Deportivo',
-            'Oversized',
-            'Polarizados',
-            'Espejados',
-            'Plegables',
-            'Cat Eye'
-        ],
-        'Lentes para niños': [
-            'Bebés',
-            'Niñas',
-            'Niños',
-            'Deportivos',
-            'Estudio',
-            'Protección',
-            'Natación'
-        ],
-        'Lentes de contacto': [
-            'Diarios',
-            'Quincenales',
-            'Mensuales',
-            'Tóricos',
-            'Multifocales',
-            'Cosméticos'
-        ],
-        'Monturas': [
-            'Metálicas',
-            'Acetato',
-            'Mixtas',
-            'Sin marco',
-            'Flexibles',
-            'Diseñador'
-        ],
-        'Estuches': [
-            'Cuero',
-            'Plegable',
-            'Aluminio',
-            'Deportivo',
-            'Vintage',
-            'Lujo',
-            'Madera',
-            'Rígido'
-        ]
+        'Lentes de sol': ['Aviador', 'Wayfarer', 'Deportivo', 'Oversized', 'Polarizados', 'Espejados', 'Plegables', 'Cat Eye'],
+        'Lentes para niños': ['Bebés', 'Niñas', 'Niños', 'Deportivos', 'Estudio', 'Protección', 'Natación'],
+        'Lentes de contacto': ['Diarios', 'Quincenales', 'Mensuales', 'Tóricos', 'Multifocales', 'Cosméticos'],
+        'Monturas': ['Metálicas', 'Acetato', 'Mixtas', 'Sin marco', 'Flexibles', 'Diseñador'],
+        'Estuches': ['Cuero', 'Plegable', 'Aluminio', 'Deportivo', 'Vintage', 'Lujo', 'Madera', 'Rígido']
     };
 
-    // Campos específicos por tipo de producto
     const productSpecificFields = {
         'Lentes de sol': ['Estilo', 'Protección UV', 'Forma'],
         'Lentes para niños': ['Edad recomendada', 'Características especiales'],
@@ -97,9 +60,30 @@ const ProductForm = () => {
     };
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [successMessage, setSuccessMessage] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
+    const [user, setUser] = useState(null);
+    const [accessDenied, setAccessDenied] = useState(false);
+    const [successMessage, setSuccessMessage] = useState('');
     const fileInputRef = useRef(null);
+
+    // Verificar autenticación
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+            if (currentUser) {
+                if (AUTHORIZED_EMAILS.includes(currentUser.email)) {
+                    setUser(currentUser);
+                    setAccessDenied(false);
+                } else {
+                    setAccessDenied(true);
+                    signOut(auth);
+                }
+            } else {
+                setUser(null);
+            }
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -155,7 +139,7 @@ const ProductForm = () => {
         } catch (error) {
             console.error('Error al subir imagen:', error);
             setUploadProgress(0);
-            alert(`Error: ${error.message}`);
+            toast.error(`Error: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
@@ -164,28 +148,25 @@ const ProductForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         
-        // Validaciones básicas
         if (!product.imageSrc) {
-            alert('Debes subir una imagen del producto');
+            toast.error('Debes subir una imagen del producto');
             return;
         }
 
         if (isNaN(product.price) || parseFloat(product.price) <= 0) {
-            alert('Ingresa un precio válido mayor a cero');
+            toast.error('Ingresa un precio válido mayor a cero');
             return;
         }
 
-        // Validación de categoría para productos que lo requieren
         const requiresCategory = ['Lentes de sol', 'Lentes para niños', 'Lentes de contacto', 'Monturas', 'Estuches'];
         if (requiresCategory.includes(product.type) && !product.category) {
-            alert(`Por favor selecciona una categoría para ${product.type}`);
+            toast.error(`Por favor selecciona una categoría para ${product.type}`);
             return;
         }
 
         setIsSubmitting(true);
 
         try {
-            // Estructura base del producto
             const productData = {
                 name: product.name.trim(),
                 imageSrc: product.imageSrc,
@@ -196,41 +177,18 @@ const ProductForm = () => {
                 createdAt: new Date(),
                 updatedAt: new Date(),
                 active: true,
-                stock: 0
+                stock: 0,
+                createdBy: user.email
             };
 
-            // Campos específicos según tipo de producto
             if (product.category) {
                 productData.category = product.category;
-                
-                // Asignaciones específicas por tipo
-                switch(product.type) {
-                    case 'Lentes de sol':
-                        productData.details.Estilo = product.category;
-                        break;
-                    case 'Lentes para niños':
-                        if (product.category === 'Bebés') {
-                            productData.details['Edad recomendada'] = '0-3 años';
-                        }
-                        if (product.category === 'Natación') {
-                            productData.details['Características especiales'] = 'Resistente al agua';
-                        }
-                        break;
-                    case 'Monturas':
-                        productData.details['Tipo de montura'] = product.category;
-                        break;
-                    default:
-                        break;
-                }
             }
 
-            // Guardar en Firestore
-            const docRef = await addDoc(collection(db, "products"), productData);
+            await addDoc(collection(db, "products"), productData);
             
-            console.log("Producto guardado con ID: ", docRef.id);
             setSuccessMessage('¡Producto guardado exitosamente!');
             
-            // Resetear formulario
             setTimeout(() => {
                 setSuccessMessage('');
                 setProduct({
@@ -264,200 +222,249 @@ const ProductForm = () => {
             
         } catch (error) {
             console.error('Error al guardar producto:', error);
-            alert(`Error al guardar: ${error.message}`);
+            toast.error(`Error al guardar: ${error.message}`);
         } finally {
             setIsSubmitting(false);
         }
     };
 
-    // Determinar campos a mostrar según el tipo de producto
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            toast.success('Sesión cerrada correctamente');
+        } catch (error) {
+            console.error("Error al cerrar sesión: ", error);
+            toast.error('Error al cerrar sesión');
+        }
+    };
+
     const getVisibleDetailFields = () => {
         const commonFields = ['Material', 'Colores disponibles'];
         const specificFields = product.type ? productSpecificFields[product.type] || [] : [];
         return [...commonFields, ...specificFields];
     };
 
+    if (accessDenied) {
+        return (
+            <div className={styles.accessDeniedContainer}>
+                <h2>Acceso Denegado</h2>
+                <p>No tienes permiso para acceder a esta página.</p>
+                <p>Por favor, inicia sesión con una cuenta autorizada.</p>
+            </div>
+        );
+    }
+
+    if (!user) {
+        return (
+            <div className={styles.loadingContainer}>
+                <div className={styles.loadingSpinner}></div>
+                <p>Verificando credenciales...</p>
+            </div>
+        );
+    }
+
     return (
-        <div className={styles.formContainer}>
-            <h1 className={styles.title}>Agregar Nuevo Producto</h1>
-            
-            {successMessage && (
-                <div className={styles.successMessage}>
-                    {successMessage}
+        <div className={styles.adminContainer}>
+            {/* Barra superior con información de usuario */}
+            <div className={styles.userBar}>
+                <div className={styles.userInfo}>
+                    <span>Bienvenido, {user.email}</span>
                 </div>
-            )}
+                <button onClick={handleLogout} className={styles.logoutButton}>
+                    <FiLogOut /> Cerrar sesión
+                </button>
+            </div>
 
-            <form onSubmit={handleSubmit}>
-                <div className={styles.formGroup}>
-                    <label className={styles.label} htmlFor="name">
-                        Nombre del Producto*
-                    </label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={product.name}
-                        onChange={handleInputChange}
-                        className={styles.input}
-                        required
-                        maxLength="100"
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label className={styles.label} htmlFor="type">
-                        Tipo de Producto*
-                    </label>
-                    <select
-                        id="type"
-                        name="type"
-                        value={product.type}
-                        onChange={handleInputChange}
-                        className={`${styles.input} ${styles.select}`}
-                        required
-                    >
-                        <option value="">Seleccione un tipo</option>
-                        {productTypes.map((type) => (
-                            <option key={type} value={type}>
-                                {type}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* Selector de categoría (solo para tipos que lo requieren) */}
-                {product.type && productCategories[product.type] && (
-                    <div className={styles.formGroup}>
-                        <label className={styles.label} htmlFor="category">
-                            Categoría de {product.type}*
-                        </label>
-                        <select
-                            id="category"
-                            name="category"
-                            value={product.category}
-                            onChange={handleInputChange}
-                            className={`${styles.input} ${styles.select}`}
-                            required={productCategories.hasOwnProperty(product.type)}
-                        >
-                            <option value="">Seleccione una categoría</option>
-                            {productCategories[product.type].map((category) => (
-                                <option key={category} value={category}>
-                                    {category}
-                                </option>
-                            ))}
-                        </select>
+            <div className={styles.formContainer}>
+                <h1 className={styles.title}>Agregar Nuevo Producto</h1>
+                
+                {successMessage && (
+                    <div className={styles.successMessage}>
+                        <FiCheckCircle className={styles.successIcon} />
+                        {successMessage}
                     </div>
                 )}
 
-                {/* Campo para subir imagen */}
-                <div className={styles.formGroup}>
-                    <label className={styles.label}>
-                        Imagen del Producto*
-                    </label>
-                    <div className={styles.fileInputWrapper} onClick={triggerFileInput}>
-                        <input
-                            type="file"
-                            ref={fileInputRef}
-                            accept="image/jpeg, image/png, image/webp"
-                            onChange={handleImageUpload}
-                            className={styles.fileInput}
-                            required
-                        />
-                        <div className={styles.fileInputLabel}>
-                            {product.imageSrc ? 'Cambiar imagen' : 'Seleccionar archivo (JPEG, PNG, WEBP)'}
-                        </div>
-                    </div>
-                    {uploadProgress > 0 && uploadProgress < 100 && (
-                        <div className={styles.progressBar}>
-                            <div 
-                                className={styles.progressFill} 
-                                style={{ width: `${uploadProgress}%` }}
-                            ></div>
-                        </div>
-                    )}
-                    {product.imageSrc && (
-                        <div className={styles.imagePreview}>
-                            <img 
-                                src={product.imageSrc} 
-                                alt="Vista previa" 
-                                className={styles.previewImage}
-                                onError={(e) => {
-                                    e.target.onerror = null;
-                                    e.target.src = '/images/placeholder-product.jpg';
-                                }}
+                <form onSubmit={handleSubmit} className={styles.form}>
+                    <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label} htmlFor="name">
+                                Nombre del Producto*
+                            </label>
+                            <input
+                                type="text"
+                                id="name"
+                                name="name"
+                                value={product.name}
+                                onChange={handleInputChange}
+                                className={styles.input}
+                                required
+                                maxLength="100"
                             />
                         </div>
+
+                        <div className={styles.formGroup}>
+                            <label className={styles.label} htmlFor="type">
+                                Tipo de Producto*
+                            </label>
+                            <select
+                                id="type"
+                                name="type"
+                                value={product.type}
+                                onChange={handleInputChange}
+                                className={`${styles.input} ${styles.select}`}
+                                required
+                            >
+                                <option value="">Seleccione un tipo</option>
+                                {productTypes.map((type) => (
+                                    <option key={type} value={type}>
+                                        {type}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                    </div>
+
+                    {product.type && productCategories[product.type] && (
+                        <div className={styles.formGroup}>
+                            <label className={styles.label} htmlFor="category">
+                                Categoría de {product.type}*
+                            </label>
+                            <select
+                                id="category"
+                                name="category"
+                                value={product.category}
+                                onChange={handleInputChange}
+                                className={`${styles.input} ${styles.select}`}
+                                required={productCategories.hasOwnProperty(product.type)}
+                            >
+                                <option value="">Seleccione una categoría</option>
+                                {productCategories[product.type].map((category) => (
+                                    <option key={category} value={category}>
+                                        {category}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     )}
-                </div>
 
-                <div className={styles.formGroup}>
-                    <label className={styles.label} htmlFor="price">
-                        Precio (MXN)*
-                    </label>
-                    <input
-                        type="number"
-                        id="price"
-                        name="price"
-                        value={product.price}
-                        onChange={handleInputChange}
-                        className={styles.input}
-                        step="0.01"
-                        min="0.01"
-                        required
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <label className={styles.label} htmlFor="description">
-                        Descripción*
-                    </label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        value={product.description}
-                        onChange={handleInputChange}
-                        className={`${styles.input} ${styles.textarea}`}
-                        rows="5"
-                        required
-                        maxLength="500"
-                    />
-                </div>
-
-                <div className={styles.formGroup}>
-                    <h2 className={styles.detailsTitle}>Detalles del Producto</h2>
-                    
-                    <div className={styles.detailsGrid}>
-                        {getVisibleDetailFields().map((field) => (
-                            <div key={field} className={styles.detailCard}>
-                                <label className={styles.label} htmlFor={`detail-${field}`}>
-                                    {field}
-                                </label>
+                    <div className={styles.formGroup}>
+                        <label className={styles.label}>
+                            Imagen del Producto*
+                        </label>
+                        <div className={styles.fileInputContainer}>
+                            <div className={styles.fileInputWrapper} onClick={triggerFileInput}>
                                 <input
-                                    type="text"
-                                    id={`detail-${field}`}
-                                    name={field}
-                                    value={product.details[field] || ''}
-                                    onChange={handleDetailChange}
-                                    className={styles.input}
-                                    required={['Material', 'Colores disponibles'].includes(field)}
+                                    type="file"
+                                    ref={fileInputRef}
+                                    accept="image/jpeg, image/png, image/webp"
+                                    onChange={handleImageUpload}
+                                    className={styles.fileInput}
+                                    required
+                                />
+                                <div className={styles.fileInputLabel}>
+                                    <FiUpload className={styles.uploadIcon} />
+                                    {product.imageSrc ? 'Cambiar imagen' : 'Seleccionar archivo (JPEG, PNG, WEBP)'}
+                                </div>
+                            </div>
+                            {uploadProgress > 0 && uploadProgress < 100 && (
+                                <div className={styles.progressBar}>
+                                    <div 
+                                        className={styles.progressFill} 
+                                        style={{ width: `${uploadProgress}%` }}
+                                    ></div>
+                                </div>
+                            )}
+                            {product.imageSrc && (
+                                <div className={styles.imagePreview}>
+                                    <img 
+                                        src={product.imageSrc} 
+                                        alt="Vista previa" 
+                                        className={styles.previewImage}
+                                        onError={(e) => {
+                                            e.target.onerror = null;
+                                            e.target.src = '/images/placeholder-product.jpg';
+                                        }}
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className={styles.formRow}>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label} htmlFor="price">
+                                Precio (MXN)*
+                            </label>
+                            <div className={styles.priceInputContainer}>
+                                <span className={styles.currencySymbol}>$</span>
+                                <input
+                                    type="number"
+                                    id="price"
+                                    name="price"
+                                    value={product.price}
+                                    onChange={handleInputChange}
+                                    className={`${styles.input} ${styles.priceInput}`}
+                                    step="0.01"
+                                    min="0.01"
+                                    required
                                 />
                             </div>
-                        ))}
-                    </div>
-                </div>
+                        </div>
 
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className={styles.submitButton}
-                >
-                    {isSubmitting ? (
-                        <span>Guardando...</span>
-                    ) : (
-                        <span>Guardar Producto</span>
-                    )}
-                </button>
-            </form>
+                        <div className={styles.formGroup}>
+                            <label className={styles.label} htmlFor="description">
+                                Descripción*
+                            </label>
+                            <textarea
+                                id="description"
+                                name="description"
+                                value={product.description}
+                                onChange={handleInputChange}
+                                className={`${styles.input} ${styles.textarea}`}
+                                rows="3"
+                                required
+                                maxLength="500"
+                            />
+                        </div>
+                    </div>
+
+                    <div className={styles.formGroup}>
+                        <h2 className={styles.detailsTitle}>Detalles del Producto</h2>
+                        
+                        <div className={styles.detailsGrid}>
+                            {getVisibleDetailFields().map((field) => (
+                                <div key={field} className={styles.detailCard}>
+                                    <label className={styles.label} htmlFor={`detail-${field}`}>
+                                        {field}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id={`detail-${field}`}
+                                        name={field}
+                                        value={product.details[field] || ''}
+                                        onChange={handleDetailChange}
+                                        className={styles.input}
+                                        required={['Material', 'Colores disponibles'].includes(field)}
+                                    />
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+
+                    <button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className={styles.submitButton}
+                    >
+                        {isSubmitting ? (
+                            <span>Guardando...</span>
+                        ) : (
+                            <span>Guardar Producto</span>
+                        )}
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

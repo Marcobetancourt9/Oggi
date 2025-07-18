@@ -280,3 +280,43 @@ select option:hover {
     background: #4f46e5;
     color: white;
 }
+
+
+.userBar {
+  background: var(--glass-effect);
+  backdrop-filter: blur(16px);
+  border-radius: 18px;
+  border: var(--glass-border);
+  box-shadow: var(--shadow-soft);
+  padding: 1rem 1.5rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.userInfo {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.logoutButton {
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  padding: 0.5rem 1.25rem;
+  border-radius: 10px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(117, 142, 255, 0.3);
+}
+
+.logoutButton:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(117, 142, 255, 0.3);
+}

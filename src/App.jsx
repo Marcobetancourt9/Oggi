@@ -23,7 +23,7 @@ import Registro from './Registro/Registro';
 import RecuperarContrasena from './RecuperarContrasena/RecuperarContrasena';
 import ProductForm from './ProductForm/ProductForm';
 import AdminProducts from './AdminProducts/AdminProducts';
-
+import AuthBubble from './Loginbutton/Loginbutton';
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -70,6 +70,7 @@ export default function App() {
           </main>
         <Footer />
         <WhatsApp />
+        <AuthBubble />
       </div>
     </Router>
   );
