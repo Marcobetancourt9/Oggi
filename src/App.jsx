@@ -21,6 +21,8 @@ import './App.css';
 import LoginForm from './Login/Login';
 import Registro from './Registro/Registro';
 import RecuperarContrasena from './RecuperarContrasena/RecuperarContrasena';
+import ProductForm from './ProductForm/ProductForm';
+
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -61,6 +63,7 @@ export default function App() {
             <Route path="/login" element={<LoginForm />} />
             <Route path="/registro" element={<Registro />} />
             <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
+            <Route path="/product-form" element={<ProductForm />} />            
           </Routes> 
           </main>
         <Footer />

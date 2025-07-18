@@ -1,0 +1,282 @@
+/* Variables de diseño */
+:root {
+  --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --secondary-gradient: linear-gradient(to right, #ff758c, #ff7eb3);
+  --glass-effect: rgba(255, 255, 255, 0.15);
+  --glass-border: 1px solid rgba(255, 255, 255, 0.2);
+  --shadow-elevated: 0 8px 32px rgba(31, 38, 135, 0.15);
+  --shadow-soft: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+/* Estructura principal */
+.formContainer {
+  max-width: 48rem;
+  margin: 2rem auto;
+  padding: 2.5rem;
+  background: var(--glass-effect);
+  backdrop-filter: blur(12px);
+  border-radius: 24px;
+  border: var(--glass-border);
+  box-shadow: var(--shadow-elevated);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.formContainer:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(31, 38, 135, 0.25);
+}
+
+/* Título con efecto neón sutil */
+.title {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #2d3748;
+  position: relative;
+  text-align: center;
+  background: linear-gradient(90deg, #4f46e5, #7c3aed);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 2px 4px rgba(79, 70, 229, 0.15);
+}
+
+.title::after {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: var(--secondary-gradient);
+  border-radius: 2px;
+  animation: underlineGrow 0.6s ease-out;
+}
+
+/* Campos del formulario - Efecto vidrio */
+.formGroup {
+  margin-bottom: 1.75rem;
+  position: relative;
+}
+
+.label {
+  display: block;
+  margin-bottom: 0.75rem;
+  color: #1874ff;
+  font-weight: 600;
+  font-size: 0.95rem;
+  letter-spacing: 0.5px;
+}
+
+.input {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.8);
+  border: none;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  box-shadow: var(--shadow-soft);
+}
+
+.input:focus {
+  outline: none;
+  background: white;
+  box-shadow: 0 0 0 3px rgba(118, 75, 162, 0.2);
+  transform: translateY(-2px);
+}
+
+/* Efecto especial para el campo de archivo */
+.fileInputWrapper {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.fileInputWrapper:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(118, 75, 162, 0.15);
+}
+
+.fileInput {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  opacity: 0;
+  position: absolute;
+  z-index: 2;
+  cursor: pointer;
+}
+
+.fileInputLabel {
+  display: block;
+  padding: 1rem 1.25rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: #4a5568;
+  text-align: center;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.fileInputWrapper:hover .fileInputLabel {
+  background: white;
+  color: #4f46e5;
+}
+
+/* Vista previa de imagen con efecto polaroid */
+.imagePreview {
+  margin-top: 1.5rem;
+  perspective: 1000px;
+}
+
+.previewImage {
+  width: 100%;
+  max-height: 200px;
+  object-fit: contain;
+  border-radius: 12px;
+  background: white;
+  padding: 0.5rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform-style: preserve-3d;
+  transform: rotateX(1deg) rotateY(-1deg);
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.previewImage:hover {
+  transform: rotateX(0) rotateY(0) scale(1.02);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* Botón con efecto 3D */
+.submitButton {
+  width: 100%;
+  padding: 1.25rem;
+  margin-top: 1rem;
+  background: var(--primary-gradient);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  z-index: 1;
+}
+
+.submitButton::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.submitButton:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.submitButton:hover::before {
+  opacity: 1;
+}
+
+.submitButton:active {
+  transform: translateY(1px);
+}
+
+.submitButton:disabled {
+  background: #e2e8f0;
+  transform: none !important;
+  box-shadow: none !important;
+  cursor: not-allowed;
+}
+
+/* Efecto de detalles - Tarjetas flotantes */
+.detailsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-top: 1.5rem;
+}
+
+.detailCard {
+  background: rgba(255, 255, 255, 0.9);
+  padding: 1.25rem;
+  border-radius: 12px;
+  box-shadow: var(--shadow-soft);
+  transition: all 0.3s ease;
+}
+
+.detailCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+/* Animaciones */
+@keyframes underlineGrow {
+  from { width: 0; opacity: 0; }
+  to { width: 80px; opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.successMessage {
+  animation: fadeIn 0.6s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  background: rgba(110, 231, 183, 0.2);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(110, 231, 183, 0.3);
+  color: #065f46;
+  padding: 1rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+/* Efecto de carga */
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.loadingShimmer {
+  animation: shimmer 1.5s infinite linear;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  border-radius: 8px;
+}
+
+/* Estilos para el select */
+.select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1em;
+    padding-right: 2.5rem;
+}
+
+/* Efecto hover para las opciones */
+select option {
+    padding: 0.5rem;
+    background: white;
+    color: #2d3748;
+}
+
+select option:hover {
+    background: #4f46e5;
+    color: white;
+}
