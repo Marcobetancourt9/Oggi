@@ -228,9 +228,6 @@ const AdminProducts = () => {
         <div className={styles.userInfo}>
           <span>Bienvenido, {user.email}</span>
         </div>
-        <button onClick={handleLogout} className={styles.logoutButton}>
-          <FiLogOut /> Cerrar sesión
-        </button>
       </div>
 
       <h1 className={styles.adminTitle}>Administración de Productos</h1>

@@ -270,9 +270,6 @@ const ProductForm = () => {
                 <div className={styles.userInfo}>
                     <span>Bienvenido, {user.email}</span>
                 </div>
-                <button onClick={handleLogout} className={styles.logoutButton}>
-                    <FiLogOut /> Cerrar sesión
-                </button>
             </div>
 
             <div className={styles.formContainer}>
@@ -289,7 +286,7 @@ const ProductForm = () => {
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
                             <label className={styles.label} htmlFor="name">
-                                Nombre del Producto*
+                                Nombre del Producto
                             </label>
                             <input
                                 type="text"
@@ -305,7 +302,7 @@ const ProductForm = () => {
 
                         <div className={styles.formGroup}>
                             <label className={styles.label} htmlFor="type">
-                                Tipo de Producto*
+                                Tipo de Producto
                             </label>
                             <select
                                 id="type"
@@ -328,7 +325,7 @@ const ProductForm = () => {
                     {product.type && productCategories[product.type] && (
                         <div className={styles.formGroup}>
                             <label className={styles.label} htmlFor="category">
-                                Categoría de {product.type}*
+                                Categoría de {product.type}
                             </label>
                             <select
                                 id="category"
@@ -350,7 +347,7 @@ const ProductForm = () => {
 
                     <div className={styles.formGroup}>
                         <label className={styles.label}>
-                            Imagen del Producto*
+                            Imagen del Producto
                         </label>
                         <div className={styles.fileInputContainer}>
                             <div className={styles.fileInputWrapper} onClick={triggerFileInput}>
@@ -394,10 +391,9 @@ const ProductForm = () => {
                     <div className={styles.formRow}>
                         <div className={styles.formGroup}>
                             <label className={styles.label} htmlFor="price">
-                                Precio (MXN)*
+                                Precio
                             </label>
                             <div className={styles.priceInputContainer}>
-                                <span className={styles.currencySymbol}>$</span>
                                 <input
                                     type="number"
                                     id="price"
@@ -414,7 +410,7 @@ const ProductForm = () => {
 
                         <div className={styles.formGroup}>
                             <label className={styles.label} htmlFor="description">
-                                Descripción*
+                                Descripción
                             </label>
                             <textarea
                                 id="description"
