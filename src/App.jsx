@@ -24,6 +24,7 @@ import RecuperarContrasena from './RecuperarContrasena/RecuperarContrasena';
 import ProductForm from './ProductForm/ProductForm';
 import AdminProducts from './AdminProducts/AdminProducts';
 import AuthBubble from './Loginbutton/Loginbutton';
+import MenuAdmin from './MenuAdmin/MenuAdmin.jsx';
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -66,6 +67,7 @@ export default function App() {
             <Route path="/recuperar-contrasena" element={<RecuperarContrasena />} />
             <Route path="/product-form" element={<ProductForm />} />            
             <Route path="/borrar" element={<AdminProducts />} />            
+            <Route path="/menuadmin" element={<MenuAdmin />} />
           </Routes> 
           </main>
         <Footer />
