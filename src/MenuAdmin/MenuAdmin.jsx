@@ -54,7 +54,8 @@ const MenuAdmin = () => {
       {/* Main Content */}
       <main className="admin-main">
         <div className="admin-content">
-          <h1>Bienvenido al Panel de Administración</h1>
+          <h1>Bienvenido al Panel de</h1>
+          <h1>Administración</h1>
           <p>Selecciona una opción del menú para comenzar.</p>
           
           <div className="dashboard-cards">
