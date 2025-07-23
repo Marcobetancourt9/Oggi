@@ -6,7 +6,6 @@ import Inicio from './Inicio/Inicio';
 import Monturas from './Monturas/Monturas';
 import LentesContacto from './LentesContacto/LentesContacto';
 import '@fortawesome/fontawesome-free/css/all.min.css';
-import WhatsApp from './Whatsapp/Whatsapp';
 import Contacto from './Contacto/Contacto';
 import Productos from './Productos/Productos';
 import Preguntas from './Preguntas/Preguntas';
@@ -25,6 +24,7 @@ import ProductForm from './ProductForm/ProductForm';
 import AdminProducts from './AdminProducts/AdminProducts';
 import AuthBubble from './Loginbutton/Loginbutton';
 import MenuAdmin from './MenuAdmin/MenuAdmin.jsx';
+import CombinedBubble from './Whatsapp/CombinedBubble.jsx';
 
 export default function App() {
   const [scrolled, setScrolled] = useState(false);
@@ -71,7 +71,7 @@ export default function App() {
           </Routes> 
           </main>
         <Footer />
-        <WhatsApp />
+        <CombinedBubble />
         <AuthBubble />
       </div>
     </Router>
