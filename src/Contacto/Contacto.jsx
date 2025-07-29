@@ -68,8 +68,11 @@ const Contacto = () => {
           <div className={styles.infoCard}>
             <FaClock className={styles.icon} />
             <h3>Horario</h3>
-            <p>Lunes a Viernes: 9:00 AM - 6:00 PM</p>
-            <p>Sábados: 9:00 AM - 2:00 PM</p>
+            <p>Lunes a Viernes:</p>
+              <p>9:00 AM - 12:00 PM</p>
+              <p>2:30 PM - 5:00 PM</p>
+            <p>Sábados:</p>
+              <p>10:00 AM - 2:00 PM</p>
           </div>
         </div>
 
