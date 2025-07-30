@@ -4,7 +4,7 @@
   "description": "Tienda de lentes y servicios ópticos",
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
+      "src": "https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//oggi.png",
       "type": "image/png",
       "sizes": "72x72"
     },
