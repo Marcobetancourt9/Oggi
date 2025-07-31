@@ -14,7 +14,7 @@ const CombinedBubble = () => {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      if (currentUser && currentUser.email === 'marco.betancourt@correo.unimet.edu.ve') {
+      if (currentUser && (currentUser.email === 'centroopticooggi@gmail.com' || currentUser.email === 'marco.betancourt@correo.unimet.edu.ve')) {
         setIsAdmin(true);
         setIsAnimating(true);
         setTimeout(() => setIsAnimating(false), 1000);

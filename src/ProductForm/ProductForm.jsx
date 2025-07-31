@@ -9,7 +9,7 @@ import styles from './ProductForm.module.css';
 // Lista de correos autorizados
 const AUTHORIZED_EMAILS = [
   'marco.betancourt@correo.unimet.edu.ve',
-  '', // Completa con el segundo correo
+  'centroopticooggi@gmail.com', // Completa con el segundo correo
   ''  // Completa con el tercer correo
 ];
 

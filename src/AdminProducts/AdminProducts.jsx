@@ -13,7 +13,7 @@ Modal.setAppElement('#root');
 // Lista de correos autorizados (completa los espacios vacíos)
 const AUTHORIZED_EMAILS = [
   'marco.betancourt@correo.unimet.edu.ve',
-  '', // Completa con el segundo correo
+  'centroopticooggi@gmail.com',
   ''  // Completa con el tercer correo
 ];
 
