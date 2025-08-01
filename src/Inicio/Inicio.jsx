@@ -30,16 +30,33 @@ const Inicio = () => {
 
   return (
     <div className="inicio-container">
-      {/* Hero Section con efecto parallax */}
       <section className="hero-section">
-        <div className="hero-overlay"></div>
         <div className="hero-content">
+          <img 
+            src="https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//oggi.png" 
+            alt="Oggi Logo" 
+            className="oggi-logo"
+          />
           <h1 className="hero-title">
             <span className="hero-title-line1">¡Oggi tu centro óptico ideal!</span>
           </h1>
+          <img 
+            src="https://ppfmspwqiqawiiexaanb.supabase.co/storage/v1/object/public/imagenesoggi//cashea.png" 
+            alt="Cashea Logo" 
+            className="cashea-logo"
+          />
           <p className="hero-subtitle">Tiendas con <span className="highlight">Cashea</span></p>
-          <button className="hero-button">Descubre más</button>
+          <div className="cashea-tagline">Compra en cuotas lo que necesitas hoy</div>
+          <button 
+            className="hero-button" 
+            onClick={() => window.location.href="https://mobile.cashea.app/merchants/48e697d1-6474-4e97-8428-0151976837ae"}>
+            Descubre más
+          </button>
+          <br />
+          <br />
+          <br />
         </div>
+        <div className="hero-wave"></div>
       </section>
 
       {/* Product Categories con imágenes */}
